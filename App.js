@@ -2,11 +2,12 @@ import React from "react"
 import { Text } from "react-native"
 import { createAppContainer, createSwitchNavigator } from "react-navigation"
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs"
-import { Feather } from "@expo/vector-icons"
+import { Provider as PaperProvider } from 'react-native-paper';
+import { Feather } from '@expo/vector-icons'
 
-import HomeScreen from "./screens/HomeScreen"
-import GameScreen from "./screens/GameScreen"
-import StatisticsScreen from "./screens/StatisticsScreen"
+import HomeScreen from "./src/screens/HomeScreen"
+import GameScreen from "./src/screens/GameScreen"
+import StatisticsScreen from "./src/screens/StatisticsScreen"
 
 const tabConfig = {
   labelStyle: {
@@ -21,26 +22,14 @@ const navigator = createSwitchNavigator({
       screen: HomeScreen,
       navigationOptions: {
         tabBarLabel: <Text style={tabConfig.labelStyle}>Home</Text>,
-        tabBarIcon: ({ tintColor }) => {
-          <Feather
-            name="home"
-            size={25}
-            color={tintColor}
-          />
-        }
+        tabBarIcon: <Feather name="home" size={25} color='white' />
       }
     },
     Statistics: {
       screen: StatisticsScreen,
       navigationOptions: {
         tabBarLabel: <Text style={tabConfig.labelStyle}>Statistics</Text>,
-        tabBarIcon: ({ tintColor }) => {
-          <Feather
-            name="bar-chart-2"
-            size={25}
-            color={tintColor}
-          />
-        }
+        tabBarIcon: <Feather name="bar-chart-2" size={25} color='white' />
       }
     }
   },
@@ -57,4 +46,10 @@ const navigator = createSwitchNavigator({
   Game: GameScreen
 });
 
-export default createAppContainer(navigator);
+const App = createAppContainer(navigator);
+
+export default () => (
+  <PaperProvider>
+    <App />
+  </PaperProvider>
+)
