@@ -9,11 +9,9 @@ import GameScreen from "./screens/GameScreen"
 import StatisticsScreen from "./screens/StatisticsScreen"
 
 const tabConfig = {
-  iconStyle: {
-    fontSize: 25
-  },
   labelStyle: {
-    fontSize: 15
+    fontSize: 15,
+    color: 'white'
   }
 };
 
@@ -23,22 +21,26 @@ const navigator = createSwitchNavigator({
       screen: HomeScreen,
       navigationOptions: {
         tabBarLabel: <Text style={tabConfig.labelStyle}>Home</Text>,
-        tabBarIcon: ({ tintColor }) => (
-          <Feather name="home" style={tabConfig.iconStyle} color={tintColor} />
-        )
+        tabBarIcon: ({ tintColor }) => {
+          <Feather
+            name="home"
+            size={25}
+            color={tintColor}
+          />
+        }
       }
     },
     Statistics: {
       screen: StatisticsScreen,
       navigationOptions: {
         tabBarLabel: <Text style={tabConfig.labelStyle}>Statistics</Text>,
-        tabBarIcon: ({ tintColor }) => (
+        tabBarIcon: ({ tintColor }) => {
           <Feather
-            name="bar-chart"
-            style={tabConfig.iconStyle}
+            name="bar-chart-2"
+            size={25}
             color={tintColor}
           />
-        )
+        }
       }
     }
   },
@@ -46,7 +48,7 @@ const navigator = createSwitchNavigator({
       initialRouteName: "Home",
       order: ["Home", "Statistics"],
       barStyle: {
-        backgroundColor: "red",
+        backgroundColor: "#29b6f6",
         height: 70,
         justifyContent: "center"
       },

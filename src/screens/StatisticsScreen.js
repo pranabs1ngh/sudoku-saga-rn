@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
-import { Text, View } from 'react-native'
+import { StatusBar, Text, View } from 'react-native'
 
 export default class StatisticsScreen extends Component {
   render() {
     return (
-      <View>
-        <Text> Statistics </Text>
-      </View>
+      <>
+        <StatusBar barStyle='dark-content' backgroundColor='#34515e' />
+        <View style={{ padding: 20 }}>
+          <Text>Statistics</Text>
+        </View>
+      </>
     )
   }
 }

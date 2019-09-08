@@ -1,13 +1,19 @@
 import React from 'react'
-import { StatusBar, View, Text } from 'react-native'
+import { StyleSheet, StatusBar, View, Text } from 'react-native'
 
 const HomeScreen = () => {
   return (
-    <View>
-      <StatusBar barStyle='dark-content' />
-      <Text>Home Screen</Text>
-    </View>
+    <>
+      <StatusBar barStyle='dark-content' backgroundColor='#34515e' />
+      <View style={{ padding: 20 }}>
+        <Text>Home Screen</Text>
+      </View>
+    </>
   )
 }
+
+const styles = StyleSheet.create({
+
+})
 
 export default HomeScreen
