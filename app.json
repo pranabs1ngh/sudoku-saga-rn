@@ -1,0 +1,8 @@
+{
+  "expo": {
+    "name": "Sudoku",
+    "slug": "sudoku",
+    "version": "1.0.0",
+    "sdkVersion": "34.0.0"
+  }
+}
