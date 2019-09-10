@@ -17,32 +17,32 @@ const tabConfig = {
 };
 
 const navigator = createSwitchNavigator({
-  mainFlow: createMaterialBottomTabNavigator({
-    Home: {
-      screen: HomeScreen,
-      navigationOptions: {
-        tabBarLabel: <Text style={tabConfig.labelStyle}>Home</Text>,
-        tabBarIcon: <Feather name="home" size={25} color='white' />
-      }
-    },
-    Statistics: {
-      screen: StatisticsScreen,
-      navigationOptions: {
-        tabBarLabel: <Text style={tabConfig.labelStyle}>Statistics</Text>,
-        tabBarIcon: <Feather name="bar-chart-2" size={25} color='white' />
-      }
-    }
-  },
-    {
-      initialRouteName: "Home",
-      order: ["Home", "Statistics"],
-      barStyle: {
-        backgroundColor: "#29b6f6",
-        height: 70,
-        justifyContent: "center"
-      },
-      shifting: true
-    }),
+  // mainFlow: createMaterialBottomTabNavigator({
+  //   Home: {
+  //     screen: HomeScreen,
+  //     navigationOptions: {
+  //       tabBarLabel: <Text style={tabConfig.labelStyle}>Home</Text>,
+  //       tabBarIcon: <Feather name="home" size={25} color='white' />
+  //     }
+  //   },
+  //   Statistics: {
+  //     screen: StatisticsScreen,
+  //     navigationOptions: {
+  //       tabBarLabel: <Text style={tabConfig.labelStyle}>Statistics</Text>,
+  //       tabBarIcon: <Feather name="bar-chart-2" size={25} color='white' />
+  //     }
+  //   }
+  // },
+  //   {
+  //     initialRouteName: "Home",
+  //     order: ["Home", "Statistics"],
+  //     barStyle: {
+  //       backgroundColor: "#0b3a4c",
+  //       height: 70,
+  //       justifyContent: "center"
+  //     },
+  //     shifting: true
+  //   }),
   Game: GameScreen
 });
 
