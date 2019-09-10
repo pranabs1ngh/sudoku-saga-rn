@@ -4,11 +4,20 @@ import { StatusBar, Text, View } from 'react-native'
 export default class GameScreen extends Component {
   constructor(props) {
     super(props)
+    this.state = {};
+
+    // if (level === 'easy') rem = 40;
+    // if (level === 'medium') rem = 45;
+    // if (level === 'hard') rem = 50;
+    // if (level === 'expert') rem = 60;    
 
     this.uniqRow = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    this.rem = 40;
+
     this.shuffleRow();
     this.initBoard();
     this.fillBoard(0, 0);
+    this.initDispBoard();
   }
 
   initBoard = () => {
@@ -20,6 +29,22 @@ export default class GameScreen extends Component {
       for (let j = 0; j < 9; j++)
         board[i][j] = 0;
     this.board = board;
+  }
+
+  initDispBoard = () => {
+    let dispBoard = this.board.map(el => el);
+
+    while (this.rem) {
+      let row = Math.floor(Math.random() * 9);
+      let col = Math.floor(Math.random() * 9);
+
+      if (dispBoard[row][col]) {
+        dispBoard[row][col] = 0
+        this.rem--;
+      }
+    }
+
+    this.state = { dispBoard };
   }
 
   checkHorizontal = (num, row) => {
@@ -84,6 +109,7 @@ export default class GameScreen extends Component {
   }
 
   componentWillMount = () => {
+    console.log(this.state.dispBoard)
   }
 
   render() {
