@@ -1,5 +1,4 @@
-let board, dispBoard, rem, uniqRow;
-let subgrids = [[], [], [], [], [], [], [], [], []];
+let board, hide, uniqRow;
 
 init = () => {
   board = new Array(9);
@@ -16,43 +15,18 @@ init = () => {
   fillBoard(0, 0);
 }
 
-initDispBoard = () => {
-  let dispBoard = board.map(el => el);
+hideElements = hide => {
+  board = board.map(el => {
+    return el.map(el => ({ num: el, unum: null, visible: true }))
+  })
 
-  while (rem) {
+  while (hide) {
     let row = Math.floor(Math.random() * 9);
     let col = Math.floor(Math.random() * 9);
 
-    if (dispBoard[row][col]) {
-      dispBoard[row][col] = 0
-      rem--;
-    }
-  }
-}
-
-initSubGrid = () => {
-  for (let i = 0; i < 9; i++) {
-    for (let j = 0; j < 9; j++) {
-      let id;
-
-      if (i < 3 && j < 3) id = 0;
-      else if (i < 3 && j < 6) id = 1;
-      else if (i < 3 && j > 5) id = 2;
-      else if (i < 6 && j < 3) id = 3;
-      else if (i < 6 && j < 6) id = 4;
-      else if (i < 6 && j > 5) id = 5;
-      else if (i > 5 && j < 3) id = 6;
-      else if (i > 5 && j < 6) id = 7;
-      else id = 8;
-
-      cell = {
-        row: i,
-        col: j,
-        id,
-        num: dispBoard[i][j] ? dispBoard[i][j] : null
-      }
-
-      subgrids[id].push(cell);
+    if (board[row][col].visible) {
+      board[row][col].visible = false
+      hide--;
     }
   }
 }
@@ -119,14 +93,13 @@ fillBoard = (row, col) => {
 }
 
 export default generateBoard = level => {
-  if (level === 'easy') rem = 40;
-  if (level === 'medium') rem = 45;
-  if (level === 'hard') rem = 50;
-  if (level === 'expert') rem = 60;
+  if (level === 'easy') hide = 40;
+  if (level === 'medium') hide = 45;
+  if (level === 'hard') hide = 50;
+  if (level === 'expert') hide = 60;
 
   init();
-  initDispBoard();
-  initSubGrid();
+  hideElements(hide)
 
-  return { board, subgrids }
+  return board;
 }

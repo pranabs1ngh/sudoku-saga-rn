@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import { StyleSheet, StatusBar, Text, View, ActivityIndicator } from 'react-native'
+import { StyleSheet, StatusBar, Text, View, TouchableWithoutFeedback } from 'react-native'
 
-// import sudoku from '../models/sudoku'
-import SubGrid from '../components/SubGrid'
+import sudoku from '../models/sudoku'
 import Header from '../components/Header'
 import Helpers from '../components/Helpers'
 import Numpad from '../components/Numpad'
@@ -10,23 +9,11 @@ import Numpad from '../components/Numpad'
 export default class GameScreen extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      gameplay: false,
-      selectedCell: null
-    }
-    // const { board, subgrids } = props;
-    this.dispBoard = [[0, 0, 3, 4, 0, 9, 8, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 9, 0, 0, 0, 6, 7, 4],
-    [0, 0, 0, 9, 0, 0, 2, 8, 3],
-    [0, 0, 8, 0, 0, 0, 1, 0, 0],
-    [0, 0, 0, 0, 0, 1, 0, 9, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 9, 0, 0, 0, 7, 0, 0, 0],
-    [1, 0, 0, 0, 9, 0, 0, 0, 7]]
+    this.selectedCell = null
+    this.btn = null
 
-    this.subgrids = [[], [], [], [], [], [], [], [], []];
-    this.initSubGrid();
+    level = 'medium'
+    this.state = { gameplay: false, board: sudoku(level) }
   }
 
   changeGameState = () => {
@@ -35,52 +22,60 @@ export default class GameScreen extends Component {
       this.setState({ gameplay: true })
   }
 
-  initSubGrid = () => {
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
-        let id;
-
-        if (i < 3 && j < 3) id = 0;
-        else if (i < 3 && j < 6) id = 1;
-        else if (i < 3 && j > 5) id = 2;
-        else if (i < 6 && j < 3) id = 3;
-        else if (i < 6 && j < 6) id = 4;
-        else if (i < 6 && j > 5) id = 5;
-        else if (i > 5 && j < 3) id = 6;
-        else if (i > 5 && j < 6) id = 7;
-        else id = 8;
-
-        let cell = {
-          row: i,
-          col: j,
-          id,
-          num: this.dispBoard[i][j] ? this.dispBoard[i][j] : null
-        }
-
-        this.subgrids[id].push(cell);
-      }
-    }
+  handleTouch = btn => {
+    this.setState({ btn })
   }
 
-  renderSubGrid = (data, index) => (
-    <SubGrid
-      grid={data}
-      id={index}
-      key={index}
-      selectCell={this.selectCell}
-      selectedCell={this.state.selectedCell}
-    />
-  )
+  selectCell = (srow, scol, snum) => { this.setState({ srow, scol, snum }) }
 
-  selectCell = async data => {
-    await this.setState({ selectedCell: data });
-    this.forceUpdate();
+  renderCell = (el, row, col) => {
+    let style = {};
+
+    if (col > 0) style.borderLeftWidth = 1;
+    if (row > 0) style.borderTopWidth = 1;
+    if (col % 3 === 0 && col !== 0) {
+      style.marginLeft = 5;
+      style.borderLeftWidth = 0;
+    }
+    if (row % 3 === 0 && row !== 0) {
+      style.marginTop = 5;
+      style.borderTopWidth = 0;
+    }
+    if (row % 3 === 0 && col % 3 === 0) style.borderTopLeftRadius = 10;
+    if (row % 3 === 0 && col % 3 === 2) style.borderTopRightRadius = 10;
+    if (row % 3 === 2 && col % 3 === 0) style.borderBottomLeftRadius = 10;
+    if (row % 3 === 2 && col % 3 === 2) style.borderBottomRightRadius = 10;
+
+    style.backgroundColor = '#ECEFF1'; const { srow, scol, snum } = this.state;
+    if (row === srow || col === scol) style.backgroundColor = '#CFD8DC';
+    if (row - row % 3 === srow - srow % 3 && col - col % 3 === scol - scol % 3) style.backgroundColor = '#CFD8DC';
+    if (el.num && el.num === snum) style.backgroundColor = '#B0BEC5';
+    if (row === srow && col === scol) style.backgroundColor = '#BBDEFB';
+
+
+    return (
+      <TouchableWithoutFeedback onPress={() => this.selectCell(row, col, el.num)} key={`${row}${col}`}>
+        <View style={{ ...styles.cell, ...style }}>
+          {el.visible ? <Text style={styles.num}>{el.num}</Text> : null}
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
+  renderSudoku = () => {
+    let elements = []
+
+    for (let i = 0; i < 9; i++)
+      for (let j = 0; j < 9; j++)
+        elements.push(this.renderCell(this.state.board[i][j], i, j))
+
+    return elements;
   }
 
   render() {
     return (
       <>
-        <StatusBar barStyle='light-content' hidden={false} />
+        <StatusBar barStyle='dark-content' hidden={false} />
         <View style={styles.container}>
           <Header gameplay={this.state.gameplay} changeGameState={this.changeGameState} />
 
@@ -90,12 +85,12 @@ export default class GameScreen extends Component {
           </View>
 
           <View style={styles.sudoku}>
-            {this.subgrids.map((data, index) => this.renderSubGrid(data, index))}
+            {this.renderSudoku()}
           </View>
 
           <Helpers />
-          <Numpad />
-        </View>
+          <Numpad handleTouch={this.handleTouch} />
+        </View >
       </>
     )
   }
@@ -104,7 +99,8 @@ export default class GameScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 25,
-    flex: 1
+    flex: 1,
+    alignContent: 'center'
   },
   infoBar: {
     display: 'flex',
@@ -115,12 +111,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#283593'
   },
   sudoku: {
-    height: 357,
-    width: 357,
+    height: 343,
+    width: 343,
     marginVertical: 10,
     alignSelf: 'center',
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap'
+  },
+  cell: {
+    height: 37,
+    width: 37,
+    padding: 5,
+    borderColor: '#90A4AE',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  num: {
+    fontSize: 20,
+    padding: 5,
+    color: 'black'
   }
 });

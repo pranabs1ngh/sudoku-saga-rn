@@ -4,18 +4,13 @@ import { StyleSheet, Text, View, TouchableHighlight, FlatList } from 'react-nati
 export default class Numpad extends Component {
   numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-  handleTouch = () => {
-
-  }
-
   renderButton = num => (
     <TouchableHighlight
       style={styles.numBtn}
-      onPressIn={this.handleTouch}
-      onPressOut={this.handleTouch}
+      onPress={() => this.props.handleTouch(num)}
       key={num}
     >
-      <Text style={{ color: "white", fontSize: 25 }}>
+      <Text style={{ color: "white", fontSize: 25, paddingTop: 5 }}>
         {num}
       </Text>
     </TouchableHighlight>
