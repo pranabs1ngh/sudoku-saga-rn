@@ -5,17 +5,40 @@ export default class Cell extends Component {
   constructor(props) {
     super(props)
 
+    this.col = props.data.col
+    this.row = props.data.row
+
+    this.bgcolor = '#ECEFF1';
     this.state = {
-      col: props.data.col,
-      row: props.data.col,
       num: props.data.num,
-      unum: props.data.unum,
+      unum: props.data.unum
     }
   }
 
   renderPencil = () => {
     for (let i = 1; i <= 9; i++)
       return <Text key={`i`} style={styles.pencil} >{`i`}</Text>
+  }
+
+  handleSelect = () => {
+    this.props.selectCell({
+      col: this.col,
+      row: this.row,
+      id: this.props.boxid,
+      num: this.state.num
+    })
+  }
+
+  componentDidUpdate = () => {
+    const selectedCell = this.props.selectedCell;
+    let bgcolor = '#ECEFF1';
+
+    if (selectedCell.row === this.row && selectedCell.col === this.col)
+      bgcolor = '#C5CAE9'
+    else if (selectedCell.row === this.row || selectedCell.col === this.col || selectedCell.id === this.props.boxid)
+      bgcolor = '#CFD8DC'
+
+    this.bgcolor = bgcolor;
   }
 
   render() {
@@ -26,8 +49,8 @@ export default class Cell extends Component {
     if (this.props.id >= 6) style.marginTop = 1;
 
     return (
-      <TouchableWithoutFeedback>
-        <View style={{ ...styles.container, ...style }}>
+      <TouchableWithoutFeedback onPress={this.handleSelect}>
+        <View style={{ ...styles.container, ...style, backgroundColor: this.bgcolor }}>
           <Text style={styles.num}>{this.state.num}</Text>
         </View>
       </TouchableWithoutFeedback>
@@ -40,7 +63,6 @@ const styles = StyleSheet.create({
     height: 37,
     width: 37,
     padding: 5,
-    backgroundColor: '#ECEFF1',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'

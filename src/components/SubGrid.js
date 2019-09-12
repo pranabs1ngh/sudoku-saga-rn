@@ -7,17 +7,24 @@ export default class SubGrid extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      grid: this.props.grid
-    }
+    this.grid = this.props.grid
   }
 
-  renderCells = (data, index) => <Cell data={data} key={index} id={index} />
+  renderCell = (data, index) => (
+    <Cell
+      data={data}
+      id={index}
+      boxid={this.props.id}
+      selectCell={this.props.selectCell}
+      selectedCell={this.props.selectedCell}
+      key={index}
+    />
+  )
 
   render() {
     return (
       <View style={styles.container}>
-        {this.state.grid.map((data, index) => this.renderCells(data, index))}
+        {this.grid.map((data, index) => this.renderCell(data, index))}
       </View>
     )
   }

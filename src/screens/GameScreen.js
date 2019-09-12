@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, StatusBar, Text, View, ActivityIndicator } from 'react-native'
 
-import sudoku from '../models/sudoku'
+// import sudoku from '../models/sudoku'
 import SubGrid from '../components/SubGrid'
 import Header from '../components/Header'
 import Helpers from '../components/Helpers'
@@ -11,10 +11,10 @@ export default class GameScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      gameplay: false
+      gameplay: false,
+      selectedCell: null
     }
-
-    // const { board, dispBoard } = sudoku();
+    // const { board, subgrids } = props;
     this.dispBoard = [[0, 0, 3, 4, 0, 9, 8, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 9, 0, 0, 0, 6, 7, 4],
@@ -50,7 +50,7 @@ export default class GameScreen extends Component {
         else if (i > 5 && j < 6) id = 7;
         else id = 8;
 
-        cell = {
+        let cell = {
           row: i,
           col: j,
           id,
@@ -61,9 +61,20 @@ export default class GameScreen extends Component {
       }
     }
   }
-  renderSubGrid = (data, index) => <SubGrid grid={data} key={index} />
 
-  componentWillMount = () => {
+  renderSubGrid = (data, index) => (
+    <SubGrid
+      grid={data}
+      id={index}
+      key={index}
+      selectCell={this.selectCell}
+      selectedCell={this.state.selectedCell}
+    />
+  )
+
+  selectCell = async data => {
+    await this.setState({ selectedCell: data });
+    this.forceUpdate();
   }
 
   render() {

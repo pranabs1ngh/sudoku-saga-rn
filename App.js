@@ -5,6 +5,10 @@ import { createMaterialBottomTabNavigator } from "react-navigation-material-bott
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons'
 
+import { Provider as StoreProvider } from 'react-redux'
+import { createStore } from 'redux'
+import reducers from './src/reducers'
+
 import HomeScreen from "./src/screens/HomeScreen"
 import GameScreen from "./src/screens/GameScreen"
 import StatisticsScreen from "./src/screens/StatisticsScreen"
@@ -25,6 +29,8 @@ const theme = {
     accent: '#283593',
   }
 };
+
+const store = createStore(reducers);
 
 const navigator = createSwitchNavigator({
   // mainFlow: createMaterialBottomTabNavigator({
@@ -60,6 +66,8 @@ const App = createAppContainer(navigator);
 
 export default () => (
   <PaperProvider theme={theme}>
-    <App />
+    <StoreProvider store={store}>
+      <App />
+    </StoreProvider>
   </PaperProvider>
 )

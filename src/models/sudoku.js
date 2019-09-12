@@ -1,4 +1,5 @@
 let board, dispBoard, rem, uniqRow;
+let subgrids = [[], [], [], [], [], [], [], [], []];
 
 init = () => {
   board = new Array(9);
@@ -25,6 +26,33 @@ initDispBoard = () => {
     if (dispBoard[row][col]) {
       dispBoard[row][col] = 0
       rem--;
+    }
+  }
+}
+
+initSubGrid = () => {
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      let id;
+
+      if (i < 3 && j < 3) id = 0;
+      else if (i < 3 && j < 6) id = 1;
+      else if (i < 3 && j > 5) id = 2;
+      else if (i < 6 && j < 3) id = 3;
+      else if (i < 6 && j < 6) id = 4;
+      else if (i < 6 && j > 5) id = 5;
+      else if (i > 5 && j < 3) id = 6;
+      else if (i > 5 && j < 6) id = 7;
+      else id = 8;
+
+      cell = {
+        row: i,
+        col: j,
+        id,
+        num: dispBoard[i][j] ? dispBoard[i][j] : null
+      }
+
+      subgrids[id].push(cell);
     }
   }
 }
@@ -98,6 +126,7 @@ export default generateBoard = level => {
 
   init();
   initDispBoard();
+  initSubGrid();
 
-  return { board, dispBoard }
+  return { board, subgrids }
 }
