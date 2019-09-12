@@ -2,7 +2,7 @@ import React from "react"
 import { Text } from "react-native"
 import { createAppContainer, createSwitchNavigator } from "react-navigation"
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs"
-import { Provider as PaperProvider } from 'react-native-paper';
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons'
 
 import HomeScreen from "./src/screens/HomeScreen"
@@ -13,6 +13,16 @@ const tabConfig = {
   labelStyle: {
     fontSize: 15,
     color: 'white'
+  }
+};
+
+const theme = {
+  ...DefaultTheme,
+  roundness: 2,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#283593',
+    accent: '#283593',
   }
 };
 
@@ -49,7 +59,7 @@ const navigator = createSwitchNavigator({
 const App = createAppContainer(navigator);
 
 export default () => (
-  <PaperProvider>
+  <PaperProvider theme={theme}>
     <App />
   </PaperProvider>
 )

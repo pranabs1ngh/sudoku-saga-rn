@@ -1,125 +1,115 @@
 import React, { Component } from 'react'
-import { StatusBar, Text, View } from 'react-native'
+import { StyleSheet, StatusBar, Text, View, ActivityIndicator } from 'react-native'
+
+import sudoku from '../models/sudoku'
+import SubGrid from '../components/SubGrid'
+import Header from '../components/Header'
+import Helpers from '../components/Helpers'
+import Numpad from '../components/Numpad'
 
 export default class GameScreen extends Component {
   constructor(props) {
     super(props)
-    this.state = {};
-
-    // if (level === 'easy') rem = 40;
-    // if (level === 'medium') rem = 45;
-    // if (level === 'hard') rem = 50;
-    // if (level === 'expert') rem = 60;    
-
-    this.uniqRow = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    this.rem = 40;
-
-    this.shuffleRow();
-    this.initBoard();
-    this.fillBoard(0, 0);
-    this.initDispBoard();
-  }
-
-  initBoard = () => {
-    let board = new Array(9);
-    for (let i = 0; i < 9; i++)
-      board[i] = new Array(9);
-
-    for (let i = 0; i < 9; i++)
-      for (let j = 0; j < 9; j++)
-        board[i][j] = 0;
-    this.board = board;
-  }
-
-  initDispBoard = () => {
-    let dispBoard = this.board.map(el => el);
-
-    while (this.rem) {
-      let row = Math.floor(Math.random() * 9);
-      let col = Math.floor(Math.random() * 9);
-
-      if (dispBoard[row][col]) {
-        dispBoard[row][col] = 0
-        this.rem--;
-      }
+    this.state = {
+      gameplay: false
     }
 
-    this.state = { dispBoard };
+    // const { board, dispBoard } = sudoku();
+    this.dispBoard = [[0, 0, 3, 4, 0, 9, 8, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 9, 0, 0, 0, 6, 7, 4],
+    [0, 0, 0, 9, 0, 0, 2, 8, 3],
+    [0, 0, 8, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 9, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 9, 0, 0, 0, 7, 0, 0, 0],
+    [1, 0, 0, 0, 9, 0, 0, 0, 7]]
+
+    this.subgrids = [[], [], [], [], [], [], [], [], []];
+    this.initSubGrid();
   }
 
-  checkHorizontal = (num, row) => {
-    for (let i = 0; i < 9; i++)
-      if (this.board[row][i] === num)
-        return false;
-    return true;
+  changeGameState = () => {
+    this.state.gameplay ?
+      this.setState({ gameplay: false }) :
+      this.setState({ gameplay: true })
   }
 
-  checkVertical = (num, col) => {
-    for (let i = 0; i < 9; i++)
-      if (this.board[i][col] === num)
-        return false;
-    return true;
-  }
-
-  checkBox = (num, row, col) => {
-    for (let i = 0; i < 3; i++)
-      for (let j = 0; j < 3; j++)
-        if (this.board[row + i][col + j] === num)
-          return false;
-    return true;
-  }
-
-  isSafe = (num, row, col) => {
-    if (this.checkHorizontal(num, row) && this.checkVertical(num, col) && this.checkBox(num, row - row % 3, col - col % 3))
-      return true;
-    return false;
-  }
-
-  swapNum = (i, j) => {
-    const num = this.uniqRow[i];
-    this.uniqRow[i] = this.uniqRow[j];
-    this.uniqRow[j] = num;
-  }
-
-  shuffleRow = () => {
-    for (let i = 0; i < 5; i++)
-      this.swapNum(Math.floor(Math.random() * 9), Math.floor(Math.random() * 9))
-  }
-
-  fillBoard = (row, col) => {
-    if (col === 9) {
-      this.shuffleRow();
-      row++;
-      col = 0;
-    }
-    if (row === 9) return true;
-
+  initSubGrid = () => {
     for (let i = 0; i < 9; i++) {
-      const num = this.uniqRow[i];
+      for (let j = 0; j < 9; j++) {
+        let id;
 
-      if (this.isSafe(num, row, col)) {
-        this.board[row][col] = num;
+        if (i < 3 && j < 3) id = 0;
+        else if (i < 3 && j < 6) id = 1;
+        else if (i < 3 && j > 5) id = 2;
+        else if (i < 6 && j < 3) id = 3;
+        else if (i < 6 && j < 6) id = 4;
+        else if (i < 6 && j > 5) id = 5;
+        else if (i > 5 && j < 3) id = 6;
+        else if (i > 5 && j < 6) id = 7;
+        else id = 8;
 
-        if (this.fillBoard(row, col + 1))
-          return true;
-        this.board[row][col] = 0;
+        cell = {
+          row: i,
+          col: j,
+          id,
+          num: this.dispBoard[i][j] ? this.dispBoard[i][j] : null
+        }
+
+        this.subgrids[id].push(cell);
       }
     }
-    return false;
   }
+  renderSubGrid = (data, index) => <SubGrid grid={data} key={index} />
 
   componentWillMount = () => {
-    console.log(this.state.dispBoard)
   }
 
   render() {
     return (
       <>
-        <StatusBar barStyle='dark-content' backgroundColor='#34515e' />
-        <View style={{ padding: 20 }}>
-          <Text>Game Screen</Text>
+        <StatusBar barStyle='light-content' hidden={false} />
+        <View style={styles.container}>
+          <Header gameplay={this.state.gameplay} changeGameState={this.changeGameState} />
+
+          <View style={styles.infoBar}>
+            <Text style={{ color: 'white', fontSize: 17 }}>Expert</Text>
+            <Text style={{ color: 'white', fontSize: 17 }}>Errors: 2/3</Text>
+          </View>
+
+          <View style={styles.sudoku}>
+            {this.subgrids.map((data, index) => this.renderSubGrid(data, index))}
+          </View>
+
+          <Helpers />
+          <Numpad />
         </View>
       </>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: 25,
+    flex: 1
+  },
+  infoBar: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    backgroundColor: '#283593'
+  },
+  sudoku: {
+    height: 357,
+    width: 357,
+    marginVertical: 10,
+    alignSelf: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  }
+});
