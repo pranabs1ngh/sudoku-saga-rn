@@ -13,12 +13,12 @@ export default class Helpers extends Component {
 
   render = () => (
     <View style={styles.container}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={this.props.undo}>
         <Ionicons name='ios-undo' size={30} />
         <Text style={{ alignSelf: 'center' }}>Undo</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={this.props.erase}>
         <MaterialCommunityIcons name='eraser' size={30} />
         <Text style={{ alignSelf: 'center' }}>Erase</Text>
       </TouchableOpacity>
@@ -31,7 +31,7 @@ export default class Helpers extends Component {
         <Text style={{ alignSelf: 'center' }}>Pencil</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={this.props.hint}>
         <MaterialCommunityIcons name='lightbulb-on-outline' size={30} />
         <Text style={{ alignSelf: 'center' }}>Hint</Text>
       </TouchableOpacity>

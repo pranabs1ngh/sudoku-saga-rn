@@ -13,7 +13,13 @@ export default class GameScreen extends Component {
     this.btn = null
 
     level = 'medium'
-    this.state = { gameplay: false, board: sudoku(level) }
+    this.state = {
+      gameplay: false,
+      board: sudoku(level),
+      hint: 0,
+      error: 0,
+      taskStack: []
+    }
   }
 
   changeGameState = () => {
@@ -22,11 +28,55 @@ export default class GameScreen extends Component {
       this.setState({ gameplay: true })
   }
 
-  handleTouch = btn => {
-    this.setState({ btn })
+  handleEntry = btn => {
+    let { board, error, taskStack } = this.state;
+    el = board[this.state.srow][this.state.scol];
+    if (!el.visible) {
+      el.unum = btn === el.unum ? 0 : btn
+
+      if (el.unum)
+        taskStack.push({ row: this.state.srow, col: this.state.scol, action: 'e', num: el.unum })
+      else
+        taskStack.push({ row: this.state.srow, col: this.state.scol, action: 'rm' })
+
+      if (el.unum && el.unum != el.num) error++;
+      this.setState({ board, snum: el.unum, error, taskStack });
+    }
   }
 
-  selectCell = (srow, scol, snum) => { this.setState({ srow, scol, snum }) }
+  undo = () => {
+
+  }
+
+  eraseEntry = () => {
+    let { board, taskStack } = this.state;
+    el = board[this.state.srow][this.state.scol];
+    if (!el.visible) {
+      el.unum = 0
+      taskStack.push({ row: this.state.srow, col: this.state.scol, action: 'rm' })
+      this.setState({ board, snum: el.unum, taskStack });
+    }
+  }
+
+  hint = () => {
+    if (this.state.hint < 3) {
+      let { board, hint } = this.state;
+      el = board[this.state.srow][this.state.scol];
+      if (!el.visible) {
+        el.unum = el.num
+        hint++
+        this.setState({ board, snum: el.unum, hint });
+      }
+    }
+  }
+
+  selectCell = (srow, scol, el) => {
+    let snum;
+    if (el.visible) snum = el.num;
+    else if (el.unum) snum = el.unum;
+    else snum = 0;
+    this.setState({ srow, scol, snum })
+  }
 
   renderCell = (el, row, col) => {
     let style = {};
@@ -49,14 +99,18 @@ export default class GameScreen extends Component {
     style.backgroundColor = '#ECEFF1'; const { srow, scol, snum } = this.state;
     if (row === srow || col === scol) style.backgroundColor = '#CFD8DC';
     if (row - row % 3 === srow - srow % 3 && col - col % 3 === scol - scol % 3) style.backgroundColor = '#CFD8DC';
-    if (el.num && el.num === snum) style.backgroundColor = '#B0BEC5';
-    if (row === srow && col === scol) style.backgroundColor = '#BBDEFB';
-
+    if (el.visible && el.num === snum) style.backgroundColor = '#B0BEC5';
+    if (el.unum && el.unum === snum) style.backgroundColor = '#B0BEC5';
+    if (row === srow && col === scol)
+      style.backgroundColor = '#BBDEFB';
 
     return (
-      <TouchableWithoutFeedback onPress={() => this.selectCell(row, col, el.num)} key={`${row}${col}`}>
+      <TouchableWithoutFeedback onPress={() => this.selectCell(row, col, el)} key={`${row}${col}`}>
         <View style={{ ...styles.cell, ...style }}>
           {el.visible ? <Text style={styles.num}>{el.num}</Text> : null}
+          {el.unum ? (el.unum === el.num ?
+            <Text style={styles.unum}>{el.unum}</Text> :
+            <Text style={styles.err}>{el.unum}</Text>) : null}
         </View>
       </TouchableWithoutFeedback>
     )
@@ -72,28 +126,27 @@ export default class GameScreen extends Component {
     return elements;
   }
 
-  render() {
-    return (
-      <>
-        <StatusBar barStyle='dark-content' hidden={false} />
-        <View style={styles.container}>
-          <Header gameplay={this.state.gameplay} changeGameState={this.changeGameState} />
+  render = () => (
+    <>
+      <StatusBar barStyle='dark-content' hidden={false} />
+      <View style={styles.container}>
+        <Header gameplay={this.state.gameplay} changeGameState={this.changeGameState} />
 
-          <View style={styles.infoBar}>
-            <Text style={{ color: 'white', fontSize: 17 }}>Expert</Text>
-            <Text style={{ color: 'white', fontSize: 17 }}>Errors: 2/3</Text>
-          </View>
+        <View style={styles.infoBar}>
+          <Text style={{ color: 'white', fontSize: 17 }}>Hint: {this.state.hint}/3</Text>
+          <Text style={{ color: 'white', fontSize: 17 }}>Expert</Text>
+          <Text style={{ color: 'white', fontSize: 17 }}>Errors: {this.state.error}/3</Text>
+        </View>
 
-          <View style={styles.sudoku}>
-            {this.renderSudoku()}
-          </View>
+        <View style={styles.sudoku}>
+          {this.renderSudoku()}
+        </View>
 
-          <Helpers />
-          <Numpad handleTouch={this.handleTouch} />
-        </View >
-      </>
-    )
-  }
+        <Helpers undo={this.undo} erase={this.eraseEntry} hint={this.hint} />
+        <Numpad handleTouch={this.handleEntry} />
+      </View >
+    </>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -108,7 +161,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 30,
     paddingVertical: 10,
-    backgroundColor: '#283593'
+    backgroundColor: '#0D47A1'
   },
   sudoku: {
     height: 343,
@@ -132,5 +185,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     padding: 5,
     color: 'black'
+  },
+  unum: {
+    fontSize: 20,
+    padding: 5,
+    color: '#0D47A1'
+  },
+  err: {
+    fontSize: 20,
+    padding: 5,
+    color: '#d50000'
   }
 });
