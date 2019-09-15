@@ -10,7 +10,11 @@
       "resizeMode": "contain",
       "backgroundColor": "#0b3a4c"
     },
-    "platforms": ["android", "ios"],
+    "platforms": [
+      "android",
+      "ios",
+      "web"
+    ],
     "android": {
       "package": "com.pks.sudokusaga"
     }

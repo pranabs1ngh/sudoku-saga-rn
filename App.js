@@ -5,9 +5,7 @@ import { createMaterialBottomTabNavigator } from "react-navigation-material-bott
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons'
 
-import { Provider as StoreProvider } from 'react-redux'
-import { createStore } from 'redux'
-import reducers from './src/reducers'
+import { Provider as FontProvider } from "./src/context/FontContext";
 
 import HomeScreen from "./src/screens/HomeScreen"
 import GameScreen from "./src/screens/GameScreen"
@@ -16,7 +14,7 @@ import StatisticsScreen from "./src/screens/StatisticsScreen"
 const tabConfig = {
   labelStyle: {
     fontSize: 15,
-    color: 'white'
+    color: '#1A237E'
   }
 };
 
@@ -25,40 +23,38 @@ const theme = {
   roundness: 2,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#283593',
+    primary: '#212121',
     accent: '#283593',
   }
 };
 
-const store = createStore(reducers);
-
 const navigator = createSwitchNavigator({
-  // mainFlow: createMaterialBottomTabNavigator({
-  //   Home: {
-  //     screen: HomeScreen,
-  //     navigationOptions: {
-  //       tabBarLabel: <Text style={tabConfig.labelStyle}>Home</Text>,
-  //       tabBarIcon: <Feather name="home" size={25} color='white' />
-  //     }
-  //   },
-  //   Statistics: {
-  //     screen: StatisticsScreen,
-  //     navigationOptions: {
-  //       tabBarLabel: <Text style={tabConfig.labelStyle}>Statistics</Text>,
-  //       tabBarIcon: <Feather name="bar-chart-2" size={25} color='white' />
-  //     }
-  //   }
-  // },
-  //   {
-  //     initialRouteName: "Home",
-  //     order: ["Home", "Statistics"],
-  //     barStyle: {
-  //       backgroundColor: "#0b3a4c",
-  //       height: 70,
-  //       justifyContent: "center"
-  //     },
-  //     shifting: true
-  //   }),
+  mainFlow: createMaterialBottomTabNavigator({
+    Home: {
+      screen: HomeScreen,
+      navigationOptions: {
+        tabBarLabel: <Text style={tabConfig.labelStyle}>Home</Text>,
+        tabBarIcon: <Feather name="home" size={25} color='#1A237E' />
+      }
+    },
+    Statistics: {
+      screen: StatisticsScreen,
+      navigationOptions: {
+        tabBarLabel: <Text style={tabConfig.labelStyle}>Statistics</Text>,
+        tabBarIcon: <Feather name="bar-chart-2" size={25} color='#1A237E' />
+      }
+    }
+  },
+    {
+      initialRouteName: "Home",
+      order: ["Home", "Statistics"],
+      barStyle: {
+        backgroundColor: "white",
+        height: 70,
+        justifyContent: "center"
+      },
+      shifting: true
+    }),
   Game: GameScreen
 });
 
@@ -66,8 +62,8 @@ const App = createAppContainer(navigator);
 
 export default () => (
   <PaperProvider theme={theme}>
-    <StoreProvider store={store}>
+    <FontProvider>
       <App />
-    </StoreProvider>
+    </FontProvider>
   </PaperProvider>
 )

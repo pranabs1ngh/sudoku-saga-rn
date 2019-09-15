@@ -1,6 +1,6 @@
 let board, hide, uniqRow;
 
-init = () => {
+const init = () => {
   board = new Array(9);
   uniqRow = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -15,7 +15,7 @@ init = () => {
   fillBoard(0, 0);
 }
 
-hideElements = hide => {
+const hideElements = hide => {
   board = board.map(el => {
     return el.map(el => ({ num: el, unum: null, visible: true }))
   })
@@ -31,21 +31,21 @@ hideElements = hide => {
   }
 }
 
-checkHorizontal = (num, row) => {
+const checkHorizontal = (num, row) => {
   for (let i = 0; i < 9; i++)
     if (board[row][i] === num)
       return false;
   return true;
 }
 
-checkVertical = (num, col) => {
+const checkVertical = (num, col) => {
   for (let i = 0; i < 9; i++)
     if (board[i][col] === num)
       return false;
   return true;
 }
 
-checkBox = (num, row, col) => {
+const checkBox = (num, row, col) => {
   for (let i = 0; i < 3; i++)
     for (let j = 0; j < 3; j++)
       if (board[row + i][col + j] === num)
@@ -53,24 +53,24 @@ checkBox = (num, row, col) => {
   return true;
 }
 
-isSafe = (num, row, col) => {
+const isSafe = (num, row, col) => {
   if (checkHorizontal(num, row) && checkVertical(num, col) && checkBox(num, row - row % 3, col - col % 3))
     return true;
   return false;
 }
 
-swapNum = (i, j) => {
+const swapNum = (i, j) => {
   const num = uniqRow[i];
   uniqRow[i] = uniqRow[j];
   uniqRow[j] = num;
 }
 
-shuffleRow = () => {
+const shuffleRow = () => {
   for (let i = 0; i < 5; i++)
     swapNum(Math.floor(Math.random() * 9), Math.floor(Math.random() * 9))
 }
 
-fillBoard = (row, col) => {
+const fillBoard = (row, col) => {
   if (col === 9) {
     shuffleRow();
     row++;
@@ -92,7 +92,7 @@ fillBoard = (row, col) => {
   return false;
 }
 
-export default generateBoard = level => {
+export default level => {
   if (level === 'easy') hide = 40;
   if (level === 'medium') hide = 45;
   if (level === 'hard') hide = 50;
