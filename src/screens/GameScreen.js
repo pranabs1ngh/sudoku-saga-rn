@@ -11,8 +11,8 @@ export default class GameScreen extends Component {
     super(props)
     this.selectedCell = null
     this.btn = null
+    level = props.navigation.getParam('level')
 
-    level = 'medium'
     this.state = {
       gameplay: false,
       board: sudoku(level),
@@ -22,6 +22,10 @@ export default class GameScreen extends Component {
     }
   }
 
+  goBack = () => {
+    this.props.navigation.goBack(null)
+  }
+
   changeGameState = () => {
     this.state.gameplay ?
       this.setState({ gameplay: false }) :
@@ -29,18 +33,20 @@ export default class GameScreen extends Component {
   }
 
   handleEntry = btn => {
-    let { board, error, taskStack } = this.state;
-    el = board[this.state.srow][this.state.scol];
-    if (!el.visible) {
-      el.unum = btn === el.unum ? 0 : btn
+    let { board, error, taskStack, srow, scol } = this.state;
+    if (srow + 1) {
+      el = board[srow][scol];
+      if (!el.visible) {
+        el.unum = btn === el.unum ? 0 : btn
 
-      if (el.unum)
-        taskStack.push({ row: this.state.srow, col: this.state.scol, action: 'e', num: el.unum })
-      else
-        taskStack.push({ row: this.state.srow, col: this.state.scol, action: 'rm' })
+        if (el.unum)
+          taskStack.push({ row: srow, col: scol, action: 'e', num: el.unum })
+        else
+          taskStack.push({ row: srow, col: scol, action: 'rm' })
 
-      if (el.unum && el.unum != el.num) error++;
-      this.setState({ board, snum: el.unum, error, taskStack });
+        if (el.unum && el.unum != el.num) error++;
+        this.setState({ board, snum: el.unum, error, taskStack });
+      }
     }
   }
 
@@ -49,19 +55,22 @@ export default class GameScreen extends Component {
   }
 
   eraseEntry = () => {
-    let { board, taskStack } = this.state;
-    el = board[this.state.srow][this.state.scol];
-    if (!el.visible) {
-      el.unum = 0
-      taskStack.push({ row: this.state.srow, col: this.state.scol, action: 'rm' })
-      this.setState({ board, snum: el.unum, taskStack });
+    let { board, taskStack, srow, scol } = this.state;
+    if (srow + 1) {
+      el = board[srow][scol];
+      if (!el.visible) {
+        el.unum = 0
+        taskStack.push({ row: srow, col: scol, action: 'rm' })
+        this.setState({ board, snum: el.unum, taskStack });
+      }
     }
   }
 
   hint = () => {
-    if (this.state.hint < 3) {
-      let { board, hint } = this.state;
-      el = board[this.state.srow][this.state.scol];
+    let { board, hint, srow, scol } = this.state;
+
+    if (srow + 1 && hint < 3) {
+      el = board[srow][scol];
       if (!el.visible) {
         el.unum = el.num
         hint++
@@ -130,7 +139,7 @@ export default class GameScreen extends Component {
     <>
       <StatusBar barStyle='dark-content' hidden={false} />
       <View style={styles.container}>
-        <Header gameplay={this.state.gameplay} changeGameState={this.changeGameState} />
+        <Header gameplay={this.state.gameplay} changeGameState={this.changeGameState} goBack={this.goBack} />
 
         <View style={styles.infoBar}>
           <Text style={{ color: 'white', fontSize: 17 }}>Hint: {this.state.hint}/3</Text>

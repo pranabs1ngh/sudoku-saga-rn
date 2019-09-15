@@ -4,11 +4,9 @@ import { Feather, Ionicons } from '@expo/vector-icons'
 import { Button } from 'react-native-paper'
 
 export default class Header extends Component {
-  constructor(props) { super(props) }
-
   render = () => (
     <View style={styles.menuBar}>
-      <Button style={styles.back}>
+      <Button style={styles.back} onPress={() => this.props.goBack()}>
         <Feather name="arrow-left" size={25} color='white' />
       </Button>
       <View style={styles.time}>

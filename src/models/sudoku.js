@@ -93,10 +93,10 @@ const fillBoard = (row, col) => {
 }
 
 export default level => {
-  if (level === 'easy') hide = 40;
-  if (level === 'medium') hide = 45;
-  if (level === 'hard') hide = 50;
-  if (level === 'expert') hide = 60;
+  if (level === 'Easy') hide = 40;
+  if (level === 'Medium') hide = 45;
+  if (level === 'Hard') hide = 50;
+  if (level === 'Expert') hide = 60;
 
   init();
   hideElements(hide)

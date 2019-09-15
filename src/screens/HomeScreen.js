@@ -1,15 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, StatusBar, View, Text, TouchableOpacity } from "react-native";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import React, { useContext, useEffect, useState } from "react"
+import { StyleSheet, StatusBar, View, Text, TouchableOpacity } from "react-native"
+import { Feather, Ionicons } from "@expo/vector-icons"
 
-import { Context as FontContext } from "../context/FontContext";
+import { Context as FontContext } from "../context/FontContext"
+import LevelsModal from '../components/LevelsModal'
 
 const HomeScreen = ({ navigation }) => {
-  const { state, loadFont } = useContext(FontContext);
+  const { state, loadFont } = useContext(FontContext)
+  const [modalVisibility, setModalVisibility] = useState(false)
 
   useEffect(() => {
-    loadFont();
-  })
+    loadFont()
+  }, [])
 
   if (state.fontLoaded) {
     return (
@@ -25,7 +27,7 @@ const HomeScreen = ({ navigation }) => {
             <Text style={styles.title}>SUDOKU</Text>
             <Text style={styles.title}>SAGA</Text>
           </View>
-          <TouchableOpacity style={styles.play}>
+          <TouchableOpacity style={styles.play} onPress={() => { setModalVisibility(!modalVisibility) }}>
             <Feather name='play-circle' size={130} color='#1A237E' />
           </TouchableOpacity>
           {/* <TouchableOpacity style={styles.buttonOutlined}>
@@ -41,6 +43,7 @@ const HomeScreen = ({ navigation }) => {
               <Text style={styles.buttonFilledText}>  Today's Challenge</Text>
             </View>
           </TouchableOpacity>
+          <LevelsModal ifVisible={modalVisibility} setVisibility={setModalVisibility} navigation={navigation} />
         </View>
       </>
     )

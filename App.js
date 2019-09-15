@@ -1,6 +1,7 @@
 import React from "react"
 import { Text } from "react-native"
-import { createAppContainer, createSwitchNavigator } from "react-navigation"
+import { createAppContainer } from "react-navigation"
+import { createStackNavigator } from "react-navigation-stack"
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs"
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons'
@@ -28,35 +29,41 @@ const theme = {
   }
 };
 
-const navigator = createSwitchNavigator({
-  mainFlow: createMaterialBottomTabNavigator({
-    Home: {
-      screen: HomeScreen,
-      navigationOptions: {
-        tabBarLabel: <Text style={tabConfig.labelStyle}>Home</Text>,
-        tabBarIcon: <Feather name="home" size={25} color='#1A237E' />
+const navigator = createStackNavigator(
+  {
+    mainFlow: createMaterialBottomTabNavigator({
+      Home: {
+        screen: HomeScreen,
+        navigationOptions: {
+          tabBarLabel: <Text style={tabConfig.labelStyle}>Home</Text>,
+          tabBarIcon: <Feather name="home" size={25} color='#1A237E' />
+        }
+      },
+      Statistics: {
+        screen: StatisticsScreen,
+        navigationOptions: {
+          tabBarLabel: <Text style={tabConfig.labelStyle}>Statistics</Text>,
+          tabBarIcon: <Feather name="bar-chart-2" size={25} color='#1A237E' />
+        }
       }
     },
-    Statistics: {
-      screen: StatisticsScreen,
-      navigationOptions: {
-        tabBarLabel: <Text style={tabConfig.labelStyle}>Statistics</Text>,
-        tabBarIcon: <Feather name="bar-chart-2" size={25} color='#1A237E' />
-      }
-    }
+      {
+        initialRouteName: "Home",
+        order: ["Home", "Statistics"],
+        barStyle: {
+          backgroundColor: "white",
+          height: 70,
+          justifyContent: "center"
+        },
+        shifting: true
+      }),
+    Game: GameScreen
   },
-    {
-      initialRouteName: "Home",
-      order: ["Home", "Statistics"],
-      barStyle: {
-        backgroundColor: "white",
-        height: 70,
-        justifyContent: "center"
-      },
-      shifting: true
-    }),
-  Game: GameScreen
-});
+  {
+    initialRouteName: 'mainFlow',
+    headerMode: 'none'
+  }
+);
 
 const App = createAppContainer(navigator);
 
