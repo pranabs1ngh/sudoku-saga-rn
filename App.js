@@ -6,14 +6,13 @@ import { createMaterialBottomTabNavigator } from "react-navigation-material-bott
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons'
 
-import { Provider as FontProvider } from "./src/context/FontContext";
-
 import HomeScreen from "./src/screens/HomeScreen"
 import GameScreen from "./src/screens/GameScreen"
 import StatisticsScreen from "./src/screens/StatisticsScreen"
 
 const tabConfig = {
   labelStyle: {
+    fontFamily: 'Roboto',
     fontSize: 15,
     color: '#1A237E'
   }
@@ -69,8 +68,6 @@ const App = createAppContainer(navigator);
 
 export default () => (
   <PaperProvider theme={theme}>
-    <FontProvider>
-      <App />
-    </FontProvider>
+    <App />
   </PaperProvider>
 )

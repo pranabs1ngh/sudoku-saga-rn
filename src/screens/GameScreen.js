@@ -191,16 +191,19 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   num: {
+    fontFamily: 'Roboto',
     fontSize: 20,
     padding: 5,
     color: 'black'
   },
   unum: {
+    fontFamily: 'Roboto',
     fontSize: 20,
     padding: 5,
     color: '#0D47A1'
   },
   err: {
+    fontFamily: 'Roboto',
     fontSize: 20,
     padding: 5,
     color: '#d50000'

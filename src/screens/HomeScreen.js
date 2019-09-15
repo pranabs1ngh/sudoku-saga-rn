@@ -1,53 +1,64 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { Component } from "react"
 import { StyleSheet, StatusBar, View, Text, TouchableOpacity } from "react-native"
 import { Feather, Ionicons } from "@expo/vector-icons"
+import * as Font from 'expo-font'
 
-import { Context as FontContext } from "../context/FontContext"
 import LevelsModal from '../components/LevelsModal'
 
-const HomeScreen = ({ navigation }) => {
-  const { state, loadFont } = useContext(FontContext)
-  const [modalVisibility, setModalVisibility] = useState(false)
+export default class HomeScreen extends Component {
+  constructor(props) {
+    super(props)
 
-  useEffect(() => {
-    loadFont()
-  }, [])
+    this.state = { modalVisibility: false, fontLoaded: false }
+  }
 
-  if (state.fontLoaded) {
-    return (
-      <>
-        <StatusBar barStyle='dark-content' />
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <TouchableOpacity>
-              <Ionicons name='md-settings' size={20} color='#3949AB' />
+  componentWillMount = async () => {
+    await Font.loadAsync({
+      'Cocogoose': require('../../assets/fonts/Cocogoose.ttf')
+    })
+    this.setState({ fontLoaded: true })
+  }
+
+  render = () => {
+    if (this.state.fontLoaded) {
+      return (
+        <>
+          <StatusBar barStyle='dark-content' />
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <TouchableOpacity>
+                <Ionicons name='md-settings' size={20} color='#3949AB' />
+              </TouchableOpacity>
+            </View>
+            <View style={{ alignItems: 'center' }}>
+              <Text style={styles.title}>SUDOKU</Text>
+              <Text style={styles.title}>SAGA</Text>
+            </View>
+            <TouchableOpacity style={styles.play} onPress={() => this.setState({ modalVisibility: true })} >
+              <Feather name='play-circle' size={130} color='#1A237E' />
             </TouchableOpacity>
-          </View>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={styles.title}>SUDOKU</Text>
-            <Text style={styles.title}>SAGA</Text>
-          </View>
-          <TouchableOpacity style={styles.play} onPress={() => { setModalVisibility(!modalVisibility) }}>
-            <Feather name='play-circle' size={130} color='#1A237E' />
-          </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.buttonOutlined}>
+            {/* <TouchableOpacity style={styles.buttonOutlined}>
             <Text style={styles.buttonText}>CONTINUE GAME</Text>
             <View style={{ display: 'flex', flexDirection: 'row' }}>
               <Ionicons name='ios-timer' size={15} color='#90A4AE' />
               <Text style={styles.subText}> 05:36 - Expert</Text>
             </View>
           </TouchableOpacity> */}
-          <TouchableOpacity style={styles.buttonFilled}>
-            <View style={{ display: 'flex', flexDirection: 'row' }}>
-              <Ionicons name='md-calendar' size={30} color='white' />
-              <Text style={styles.buttonFilledText}>  Today's Challenge</Text>
-            </View>
-          </TouchableOpacity>
-          <LevelsModal ifVisible={modalVisibility} setVisibility={setModalVisibility} navigation={navigation} />
-        </View>
-      </>
-    )
-  } else return null;
+            <TouchableOpacity style={styles.buttonFilled}>
+              <View style={{ display: 'flex', flexDirection: 'row' }}>
+                <Ionicons name='md-calendar' size={30} color='white' />
+                <Text style={styles.buttonFilledText}>  Today's Challenge</Text>
+              </View>
+            </TouchableOpacity>
+            <LevelsModal
+              ifVisible={this.state.modalVisibility}
+              setVisibility={() => this.setState({ modalVisibility: false })}
+              navigation={this.props.navigation} />
+          </View>
+        </>
+      )
+    } else return null;
+  }
 };
 
 const styles = StyleSheet.create({
@@ -112,5 +123,3 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   }
 });
-
-export default HomeScreen;

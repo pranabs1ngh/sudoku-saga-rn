@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Modal, TouchableOpacity, BackHandler } from 're
 import { FlatList } from 'react-native-gesture-handler'
 
 export default ({ ifVisible, setVisibility, navigation }) => {
-  levels = [
+  const levels = [
     { icon: '◦◦◦', level: 'Easy' },
     { icon: '●◦◦', level: 'Medium' },
     { icon: '●●◦', level: 'Hard' },
