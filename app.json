@@ -8,13 +8,9 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0b3a4c"
+      "backgroundColor": "#1A237E"
     },
-    "platforms": [
-      "android",
-      "ios",
-      "web"
-    ],
+    "platforms": ["android", "ios", "web"],
     "android": {
       "package": "com.pks.sudokusaga"
     }
