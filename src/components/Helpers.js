@@ -11,6 +11,13 @@ export default class Helpers extends Component {
       this.setState({ pencil: true })
   }
 
+  shouldComponentUpdate = (nextProps, nextState) => {
+    if (this.state === nextState)
+      return false
+    else
+      return true
+  }
+
   render = () => (
     <View style={styles.container}>
       <TouchableOpacity onPress={this.props.undo}>

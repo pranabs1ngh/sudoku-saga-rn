@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, TouchableHighlight, FlatList } from 'react-native'
+import { StyleSheet, Text, View, TouchableHighlight } from 'react-native'
 
 export default class Numpad extends Component {
   numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
+  shouldComponentUpdate = () => false
+
   renderButton = num => (
     <TouchableHighlight
       style={styles.numBtn}
-      onPress={() => this.props.handleTouch(num)}
+      onPress={() => this.props.handleTouch(num, true)}
       key={num}
     >
       <Text style={{ color: "white", fontSize: 25, paddingTop: 5 }}>
