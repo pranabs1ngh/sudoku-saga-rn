@@ -51,7 +51,7 @@ export default class HomeScreen extends Component {
               </View>
             </TouchableOpacity>
             <LevelsModal
-              ifVisible={this.state.modalVisibility}
+              isVisible={this.state.modalVisibility}
               setVisibility={() => this.setState({ modalVisibility: false })}
               navigation={this.props.navigation} />
           </View>
@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'Cocogoose',
     fontSize: 50,
-    color: '#212121',
     color: '#1A237E'
   },
   play: {

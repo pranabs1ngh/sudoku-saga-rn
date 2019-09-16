@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 30,
     paddingVertical: 10,
-    backgroundColor: '#0D47A1'
+    backgroundColor: '#1A237E'
   },
   sudoku: {
     height: 343,
