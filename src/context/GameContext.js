@@ -1,7 +1,5 @@
 import createDataContext from './createDataContext'
 
-const newGame = () => { dispatch({ type: 'NEW_GAME' }) }
-
 const loadGame = () => {
   // 1. LOAD GAME FROM STORAGE
   const board = {}
@@ -12,7 +10,7 @@ const loadGame = () => {
 
 const gameReducer = (state, action) => {
   switch (action.type) {
-    case 'NEW_GAME':
+    case 'LOAD_GAME':
       return {}
     default:
       return state

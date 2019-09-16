@@ -5,21 +5,26 @@ import sudoku from '../models/sudoku'
 import Header from '../components/Header'
 import Helpers from '../components/Helpers'
 import Numpad from '../components/Numpad'
+import GameOverModal from '../components/GameOverModal'
+import LevelsModal from '../components/LevelsModal'
 
 export default class GameScreen extends Component {
-  constructor(props) {
-    super(props)
+  init = level => {
     this.selectedCell = null
     this.btn = null
-    level = props.navigation.getParam('level')
-
-    this.state = {
+    this.level = level
+    this.setState({
       gameplay: false,
-      board: sudoku(level),
+      isGameOver: false,
+      newGame: false,
+      board: sudoku(this.level),
+      srow: null,
+      scol: null,
+      snum: null,
       hint: 0,
       error: 0,
       taskStack: []
-    }
+    })
   }
 
   goBack = () => {
@@ -45,7 +50,11 @@ export default class GameScreen extends Component {
           taskStack.push({ row: srow, col: scol, action: 'rm' })
 
         if (el.unum && el.unum != el.num) error++;
+
         this.setState({ board, snum: el.unum, error, taskStack });
+
+        if (error === 3)
+          setTimeout(() => { this.setState({ isGameOver: true }) }, 1000)
       }
     }
   }
@@ -89,6 +98,7 @@ export default class GameScreen extends Component {
 
   renderCell = (el, row, col) => {
     let style = {};
+    const { srow, scol, snum } = this.state;
 
     if (col > 0) style.borderLeftWidth = 1;
     if (row > 0) style.borderTopWidth = 1;
@@ -105,9 +115,9 @@ export default class GameScreen extends Component {
     if (row % 3 === 2 && col % 3 === 0) style.borderBottomLeftRadius = 10;
     if (row % 3 === 2 && col % 3 === 2) style.borderBottomRightRadius = 10;
 
-    style.backgroundColor = '#ECEFF1'; const { srow, scol, snum } = this.state;
+    style.backgroundColor = '#ECEFF1';
     if (row === srow || col === scol) style.backgroundColor = '#CFD8DC';
-    if (row - row % 3 === srow - srow % 3 && col - col % 3 === scol - scol % 3) style.backgroundColor = '#CFD8DC';
+    if (srow && row - row % 3 === srow - srow % 3 && col - col % 3 === scol - scol % 3) style.backgroundColor = '#CFD8DC';
     if (el.visible && el.num === snum) style.backgroundColor = '#B0BEC5';
     if (el.unum && el.unum === snum) style.backgroundColor = '#B0BEC5';
     if (row === srow && col === scol)
@@ -135,6 +145,8 @@ export default class GameScreen extends Component {
     return elements;
   }
 
+  componentWillMount = () => { this.init(this.props.navigation.getParam('level')) }
+
   render = () => (
     <>
       <StatusBar barStyle='dark-content' hidden={false} />
@@ -143,7 +155,7 @@ export default class GameScreen extends Component {
 
         <View style={styles.infoBar}>
           <Text style={{ color: 'white', fontSize: 17 }}>Hint: {this.state.hint}/3</Text>
-          <Text style={{ color: 'white', fontSize: 17 }}>Expert</Text>
+          <Text style={{ color: 'white', fontSize: 17 }}>{this.level}</Text>
           <Text style={{ color: 'white', fontSize: 17 }}>Errors: {this.state.error}/3</Text>
         </View>
 
@@ -153,6 +165,18 @@ export default class GameScreen extends Component {
 
         <Helpers undo={this.undo} erase={this.eraseEntry} hint={this.hint} />
         <Numpad handleTouch={this.handleEntry} />
+        <GameOverModal
+          isVisible={this.state.isGameOver}
+          startNewGame={() => this.setState({ newGame: true })}
+          setVisibility={() => this.setState({ isGameOver: false })}
+          goBack={this.goBack}
+        />
+        <LevelsModal
+          isVisible={this.state.newGame}
+          init={this.init}
+          setVisibility={() => this.setState({ newGame: false })}
+          navigation={this.props.navigation}
+        />
       </View >
     </>
   )

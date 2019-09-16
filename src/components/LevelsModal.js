@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, View, Text, Modal, TouchableOpacity } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 
-export default ({ isVisible, setVisibility, navigation }) => {
+export default ({ isVisible, init, setVisibility, navigation }) => {
   const levels = [
     { icon: '◦◦◦', level: 'Easy' },
     { icon: '●◦◦', level: 'Medium' },
@@ -30,6 +30,7 @@ export default ({ isVisible, setVisibility, navigation }) => {
               <TouchableOpacity onPress={() => {
                 setVisibility(!isVisible)
                 navigation.navigate('Game', { level: item.level })
+                if (init) init(item.level)
               }}>
                 <View style={styles.item}>
                   <Text style={styles.icon}>{item.icon}</Text>
