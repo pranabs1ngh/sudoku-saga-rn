@@ -8,7 +8,8 @@ export default class Helpers extends Component {
   togglePencil = () => {
     this.state.pencil ?
       this.setState({ pencil: false }) :
-      this.setState({ pencil: true })
+      this.setState({ pencil: true });
+    this.props.pencil();
   }
 
   shouldComponentUpdate = (nextProps, nextState) => {

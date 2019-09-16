@@ -17,7 +17,7 @@ const init = () => {
 
 const hideElements = hide => {
   board = board.map(el => {
-    return el.map(el => ({ num: el, unum: [], visible: true }))
+    return el.map(el => ({ num: el, unum: [], pencil: [], visible: true }))
   })
 
   while (hide) {

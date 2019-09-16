@@ -9,7 +9,7 @@ export default class Numpad extends Component {
   renderButton = num => (
     <TouchableHighlight
       style={styles.numBtn}
-      onPress={() => this.props.handleTouch(num, true)}
+      onPress={() => this.props.handleTouch(num)}
       key={num}
     >
       <Text style={{ color: "white", fontSize: 25, paddingTop: 5 }}>
