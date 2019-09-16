@@ -37,21 +37,21 @@ export default class GameScreen extends Component {
       this.setState({ gameplay: true })
   }
 
-  handleEntry = btn => {
-    let { board, error, taskStack, srow, scol } = this.state;
+  handleEntry = (btn, stack) => {
+    let { board, error, taskStack, srow, scol } = this.state
     if (srow + 1) {
-      el = board[srow][scol];
+      el = board[srow][scol]
+      unum = el.unum
+
       if (!el.visible) {
-        el.unum = btn === el.unum ? 0 : btn
+        num = btn === unum[unum.length - 1] ? 0 : btn
 
-        if (el.unum)
-          taskStack.push({ row: srow, col: scol, action: 'e', num: el.unum })
-        else
-          taskStack.push({ row: srow, col: scol, action: 'rm' })
+        unum.push(num)
 
-        if (el.unum && el.unum != el.num) error++;
+        if (stack) taskStack.push({ row: srow, col: scol })
+        if (el && num != el.num) error++;
 
-        this.setState({ board, snum: el.unum, error, taskStack });
+        this.setState({ board, snum: num, error, taskStack });
 
         if (error === 3)
           setTimeout(() => { this.setState({ isGameOver: true }) }, 1000)
@@ -60,17 +60,30 @@ export default class GameScreen extends Component {
   }
 
   undo = () => {
+    let { taskStack, board, srow, scol } = this.state;
+    let task = taskStack[taskStack.length - 1];
 
+    if (task) {
+      srow = task.row;
+      scol = task.col;
+      unum = board[srow][scol].unum;
+
+      unum.pop();
+      taskStack.pop();
+
+      this.setState({ taskStack, board, srow, scol });
+    }
   }
 
-  eraseEntry = () => {
+  eraseEntry = stack => {
     let { board, taskStack, srow, scol } = this.state;
     if (srow + 1) {
       el = board[srow][scol];
       if (!el.visible) {
-        el.unum = 0
-        taskStack.push({ row: srow, col: scol, action: 'rm' })
-        this.setState({ board, snum: el.unum, taskStack });
+        if (stack) taskStack.push({ row: srow, col: scol })
+
+        el.unum.push(0)
+        this.setState({ board, snum: 0, taskStack });
       }
     }
   }
@@ -81,9 +94,9 @@ export default class GameScreen extends Component {
     if (srow + 1 && hint < 3) {
       el = board[srow][scol];
       if (!el.visible) {
-        el.unum = el.num
-        hint++
-        this.setState({ board, snum: el.unum, hint });
+        el.visible = !el.visible;
+        hint++;
+        this.setState({ board, snum: el.num, hint });
       }
     }
   }
@@ -91,7 +104,7 @@ export default class GameScreen extends Component {
   selectCell = (srow, scol, el) => {
     let snum;
     if (el.visible) snum = el.num;
-    else if (el.unum) snum = el.unum;
+    else if (el.unum[el.unum.length - 1]) snum = el.unum[el.unum.length - 1];
     else snum = 0;
     this.setState({ srow, scol, snum })
   }
@@ -99,6 +112,7 @@ export default class GameScreen extends Component {
   renderCell = (el, row, col) => {
     let style = {};
     const { srow, scol, snum } = this.state;
+    const unum = el.unum[el.unum.length - 1]
 
     if (col > 0) style.borderLeftWidth = 1;
     if (row > 0) style.borderTopWidth = 1;
@@ -119,7 +133,7 @@ export default class GameScreen extends Component {
     if (row === srow || col === scol) style.backgroundColor = '#CFD8DC';
     if (srow && row - row % 3 === srow - srow % 3 && col - col % 3 === scol - scol % 3) style.backgroundColor = '#CFD8DC';
     if (el.visible && el.num === snum) style.backgroundColor = '#B0BEC5';
-    if (el.unum && el.unum === snum) style.backgroundColor = '#B0BEC5';
+    if (unum && unum === snum) style.backgroundColor = '#B0BEC5';
     if (row === srow && col === scol)
       style.backgroundColor = '#BBDEFB';
 
@@ -127,9 +141,9 @@ export default class GameScreen extends Component {
       <TouchableWithoutFeedback onPress={() => this.selectCell(row, col, el)} key={`${row}${col}`}>
         <View style={{ ...styles.cell, ...style }}>
           {el.visible ? <Text style={styles.num}>{el.num}</Text> : null}
-          {el.unum ? (el.unum === el.num ?
-            <Text style={styles.unum}>{el.unum}</Text> :
-            <Text style={styles.err}>{el.unum}</Text>) : null}
+          {unum ? (unum === el.num ?
+            <Text style={styles.unum}>{unum}</Text> :
+            <Text style={styles.err}>{unum}</Text>) : null}
         </View>
       </TouchableWithoutFeedback>
     )
@@ -163,8 +177,9 @@ export default class GameScreen extends Component {
           {this.renderSudoku()}
         </View>
 
-        <Helpers undo={this.undo} erase={this.eraseEntry} hint={this.hint} />
+        <Helpers undo={this.undo} erase={() => this.eraseEntry(true)} hint={this.hint} />
         <Numpad handleTouch={this.handleEntry} />
+
         <GameOverModal
           isVisible={this.state.isGameOver}
           startNewGame={() => this.setState({ newGame: true })}
