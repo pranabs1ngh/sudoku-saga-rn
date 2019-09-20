@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, StatusBar, Text, View, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, StatusBar, Text, View, TouchableWithoutFeedback, Dimensions } from 'react-native'
 
 import sudoku from '../models/sudoku'
 import Header from '../components/Header'
@@ -15,7 +15,7 @@ export default class GameScreen extends Component {
     this.level = level
     this.ifPencil = false
     this.setState({
-      gameplay: false,
+      gameplay: true,
       isGameOver: false,
       newGame: false,
       board: sudoku(this.level),
@@ -189,12 +189,16 @@ export default class GameScreen extends Component {
     <>
       <StatusBar barStyle='dark-content' hidden={false} />
       <View style={styles.container}>
-        <Header gameplay={this.state.gameplay} changeGameState={this.changeGameState} goBack={this.goBack} />
+        <Header
+          goBack={this.goBack}
+          gameplay={this.state.gameplay}
+          changeGameState={this.changeGameState}
+        />
 
         <View style={styles.infoBar}>
-          <Text style={{ color: 'white', fontSize: 17 }}>Hint: {this.state.hint}/3</Text>
-          <Text style={{ color: 'white', fontSize: 17 }}>{this.level}</Text>
-          <Text style={{ color: 'white', fontSize: 17 }}>Errors: {this.state.error}/3</Text>
+          <Text style={styles.infoBarText}>Hints: {this.state.hint}/3</Text>
+          <Text style={styles.infoBarText}>{this.level}</Text>
+          <Text style={styles.infoBarText}>Errors: {this.state.error}/3</Text>
         </View>
 
         <View style={styles.sudoku}>
@@ -225,6 +229,8 @@ export default class GameScreen extends Component {
   )
 }
 
+const { width, height } = Dimensions.get('window')
+
 const styles = StyleSheet.create({
   container: {
     paddingTop: 25,
@@ -239,9 +245,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: '#1A237E'
   },
+  infoBarText: {
+    color: 'white',
+    fontSize: 17,
+    fontFamily: 'Roboto'
+  },
   sudoku: {
-    height: 343,
-    width: 343,
+    height: width * 0.9,
+    width: width * 0.9,
     marginVertical: 10,
     alignSelf: 'center',
     display: 'flex',
@@ -249,8 +260,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap'
   },
   cell: {
-    height: 37,
-    width: 37,
+    height: '10.811%',
+    width: '10.811%',
     borderColor: '#90A4AE',
     display: 'flex',
     flexDirection: 'row',
@@ -280,7 +291,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     fontSize: 9,
     paddingHorizontal: 3,
-    paddingTop: 1,
+    paddingTop: 0.5,
     color: '#546E7A'
   }
 });

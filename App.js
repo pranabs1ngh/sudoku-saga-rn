@@ -10,6 +10,8 @@ import HomeScreen from "./src/screens/HomeScreen"
 import GameScreen from "./src/screens/GameScreen"
 import StatisticsScreen from "./src/screens/StatisticsScreen"
 
+import { Provider as TimerProvider } from './src/context/TimerContext'
+
 const tabConfig = {
   labelStyle: {
     fontFamily: 'Roboto',
@@ -68,6 +70,8 @@ const App = createAppContainer(navigator);
 
 export default () => (
   <PaperProvider theme={theme}>
-    <App />
+    <TimerProvider>
+      <App />
+    </TimerProvider>
   </PaperProvider>
 )
