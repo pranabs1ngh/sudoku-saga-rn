@@ -4,10 +4,10 @@ import { FlatList } from 'react-native-gesture-handler'
 
 export default ({ isVisible, init, setVisibility, navigation }) => {
   const levels = [
-    { icon: '◦◦◦', level: 'Easy' },
-    { icon: '●◦◦', level: 'Medium' },
-    { icon: '●●◦', level: 'Hard' },
-    { icon: '●●●', level: 'Expert' },
+    { icon: '◻◻◻', level: 'Easy' },
+    { icon: '◼◻◻', level: 'Medium' },
+    { icon: '◼◼◻', level: 'Hard' },
+    { icon: '◼◼◼', level: 'Expert' },
   ]
 
   return (
