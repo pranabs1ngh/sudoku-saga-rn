@@ -1,14 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, View, Text, Modal, TouchableOpacity } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 
-export default ({ isVisible, init, setVisibility, navigation }) => {
+import { init } from '../models/sudoku'
+
+export default ({ isVisible, initGame, setVisibility, navigation }) => {
   const levels = [
     { icon: '◻◻◻', level: 'Easy' },
     { icon: '◼◻◻', level: 'Medium' },
     { icon: '◼◼◻', level: 'Hard' },
     { icon: '◼◼◼', level: 'Expert' },
   ]
+
+  useEffect(() => {
+    init()
+  }, [])
 
   return (
     <Modal
@@ -18,7 +24,7 @@ export default ({ isVisible, init, setVisibility, navigation }) => {
     >
       <TouchableOpacity
         style={styles.outerArea}
-        onPress={() => { setVisibility(!isVisible) }}
+        onPress={setVisibility}
       />
 
       <View style={styles.container}>
@@ -28,9 +34,9 @@ export default ({ isVisible, init, setVisibility, navigation }) => {
           renderItem={({ item }) => (
             <View style={{ backgroundColor: 'white' }}>
               <TouchableOpacity onPress={() => {
-                setVisibility(!isVisible)
+                setVisibility()
                 navigation.navigate('Game', { level: item.level })
-                if (init) init(item.level)
+                if (initGame) initGame(item.level)
               }}>
                 <View style={styles.item}>
                   <Text style={styles.icon}>{item.icon}</Text>
@@ -67,6 +73,7 @@ const styles = StyleSheet.create({
     width: 40
   },
   text: {
-    fontSize: 17
+    fontSize: 17,
+    fontFamily: 'Quicksand-Medium'
   }
 })

@@ -7,7 +7,7 @@ export default (reducer, actions, initialState) => {
     const [state, dispatch] = useReducer(reducer, initialState)
 
     let boundActions = []
-    for (let key in actions) boundActions[key] = actions[key](dispatch);
+    for (let key in actions) boundActions[key] = actions[key](dispatch)
 
     return <Context.Provider value={{ state, ...boundActions }}>
       {children}

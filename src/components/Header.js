@@ -1,24 +1,39 @@
 import React, { useContext, useEffect } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { Feather, Ionicons } from '@expo/vector-icons'
-import { Button } from 'react-native-paper'
 
 import { Context as TimerContext } from '../context/TimerContext'
 
-const padTime = num => num < 10 ? `0${num}` : num;
+const padTime = num => num < 10 ? `0${num}` : num
 
 export default props => {
-  const { state, updateTimer, pauseTimer, stopTimer } = useContext(TimerContext);
+  const { state, setTimer, updateTimer, pauseTimer } = useContext(TimerContext)
 
   useEffect(() => {
-    updateTimer();
+    if (props.gameFinished) {
+      pauseTimer()
+      setTimeout(() => {
+        props.navigation.navigate('Result', { level: props.level })
+      }, 400)
+    }
+  }, [props.gameFinished])
+
+  useEffect(() => {
+    setTimer(0)
+    pauseTimer()
+  }, [props.isGameOver])
+
+  useEffect(() => {
+    setTimer(0)
+    updateTimer()
+    return pauseTimer
   }, [])
 
   return (
     <View style={styles.menuBar}>
-      <Button style={styles.back} onPress={() => props.goBack()}>
+      <TouchableOpacity style={styles.back} onPress={() => props.navigation.goBack()}>
         <Feather name="arrow-left" size={25} color='#1A237E' />
-      </Button>
+      </TouchableOpacity>
       <View style={styles.timer}>
         <Ionicons name='ios-timer' size={25} color='#1A237E' />
         <Text style={styles.time}>
@@ -26,18 +41,18 @@ export default props => {
         </Text>
       </View>
       {props.gameplay ?
-        <Button
+        <TouchableOpacity
           onPress={() => { props.changeGameState(); pauseTimer() }}
           style={styles.pause}
         >
           <Ionicons name="ios-pause" size={25} color='#1A237E' />
-        </Button> :
-        <Button
+        </TouchableOpacity> :
+        <TouchableOpacity
           onPress={() => { props.changeGameState(); updateTimer() }}
           style={styles.pause}
         >
           <Ionicons name="ios-play" size={25} color='#1A237E' />
-        </Button>}
+        </TouchableOpacity>}
     </View>
   )
 }
@@ -51,7 +66,7 @@ const styles = StyleSheet.create({
   },
   back: {
     alignSelf: 'center',
-    borderRadius: 50
+    paddingHorizontal: 10
   },
   timer: {
     display: 'flex',
@@ -61,12 +76,12 @@ const styles = StyleSheet.create({
   time: {
     color: '#1A237E',
     fontSize: 20,
-    fontFamily: 'Roboto',
+    fontFamily: 'Quicksand-Medium',
     paddingHorizontal: 10,
     marginBottom: 5
   },
   pause: {
     alignSelf: 'center',
-    borderRadius: 50
+    paddingHorizontal: 20
   }
-});
+})

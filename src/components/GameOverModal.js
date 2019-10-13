@@ -1,33 +1,31 @@
 import React from 'react'
 import { StyleSheet, View, Text, Modal, TouchableOpacity } from 'react-native'
 
-export default ({ isVisible, startNewGame, setVisibility, goBack }) => {
-  return (
-    <Modal
-      animationType="fade"
-      visible={isVisible}
-      transparent
-    >
-      <View style={styles.outerArea}></View>
-      <View style={styles.container}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.heading}>GAME OVER</Text>
-          <Text style={{ fontFamily: 'Roboto', fontSize: 20 }}>
-            You have commited 3 errors and lost this game.
+export default ({ isVisible, startNewGame, setVisibility, goBack }) => (
+  <Modal
+    animationType="fade"
+    visible={isVisible}
+    transparent
+  >
+    <View style={styles.outerArea}></View>
+    <View style={styles.container}>
+      <View style={styles.modalContainer}>
+        <Text style={styles.heading}>GAME OVER</Text>
+        <Text style={{ fontFamily: 'Quicksand-Medium', fontSize: 20 }}>
+          You have commited 3 errors and lost this game.
           </Text>
-          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-            <TouchableOpacity onPress={startNewGame}>
-              <Text style={styles.button}>NEW GAME</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={setVisibility, goBack}>
-              <Text style={styles.button}>HOME</Text>
-            </TouchableOpacity>
-          </View>
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <TouchableOpacity onPress={startNewGame}>
+            <Text style={styles.button}>NEW GAME</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={setVisibility, goBack}>
+            <Text style={styles.button}>HOME</Text>
+          </TouchableOpacity>
         </View>
       </View>
-    </Modal>
-  )
-}
+    </View>
+  </Modal>
+)
 
 const styles = StyleSheet.create({
   outerArea: {
@@ -48,19 +46,19 @@ const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: 'white',
     width: 300,
-    height: 160,
+    height: 175,
     borderRadius: 15,
     padding: 20
   },
   heading: {
-    fontFamily: 'Roboto',
+    fontFamily: 'Quicksand-Bold',
     fontSize: 22,
-    fontWeight: 'bold',
     paddingBottom: 10
   },
   button: {
     paddingTop: 15,
     color: '#1A237E',
     fontSize: 17,
+    fontFamily: 'Quicksand-Medium'
   }
 })

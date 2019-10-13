@@ -21,4 +21,4 @@ export const { Context, Provider } = createDataContext(
   gameReducer,
   { newGame, loadGame },
   null
-);
+)

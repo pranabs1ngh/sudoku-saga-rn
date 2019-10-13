@@ -12,9 +12,7 @@ export default class Numpad extends Component {
       onPress={() => this.props.handleTouch(num)}
       key={num}
     >
-      <Text style={{ color: "white", fontSize: 25, paddingTop: 5 }}>
-        {num}
-      </Text>
+      <Text style={styles.num}>{num}</Text>
     </TouchableHighlight>
   )
 
@@ -27,20 +25,26 @@ export default class Numpad extends Component {
 
 const styles = StyleSheet.create({
   numpad: {
-    width: 350,
+    width: '100%',
     position: 'absolute',
     bottom: 0,
     display: 'flex',
     flexDirection: 'row',
-    alignSelf: 'center'
+    justifyContent: 'center'
   },
   numBtn: {
-    width: 35,
-    height: 60,
+    width: '10%',
+    height: 65,
     marginHorizontal: 2,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    backgroundColor: "#1A237E",
-    alignItems: "center"
+    backgroundColor: '#1A237E',
+    alignItems: 'center'
+  },
+  num: {
+    paddingTop: 5,
+    color: "white",
+    fontSize: 25,
+    fontFamily: 'Quicksand-Medium'
   }
 })

@@ -14,7 +14,10 @@ export default class HomeScreen extends Component {
 
   componentWillMount = async () => {
     await Font.loadAsync({
-      'Cocogoose': require('../../assets/fonts/Cocogoose.ttf')
+      'Cocogoose': require('../../assets/fonts/Cocogoose.ttf'),
+      'Quicksand': require('../../assets/fonts/Quicksand.ttf'),
+      'Quicksand-Medium': require('../../assets/fonts/Quicksand-Medium.ttf'),
+      'Quicksand-Bold': require('../../assets/fonts/Quicksand-Bold.ttf')
     })
     this.setState({ fontLoaded: true })
   }
@@ -24,12 +27,12 @@ export default class HomeScreen extends Component {
       return (
         <>
           <StatusBar barStyle='dark-content' />
+          <View style={styles.header}>
+            <TouchableOpacity>
+              <Ionicons name='md-settings' size={25} color='#3949AB' />
+            </TouchableOpacity>
+          </View>
           <View style={styles.container}>
-            <View style={styles.header}>
-              <TouchableOpacity>
-                <Ionicons name='md-settings' size={20} color='#3949AB' />
-              </TouchableOpacity>
-            </View>
             <View style={{ alignItems: 'center' }}>
               <Text style={styles.title}>SUDOKU</Text>
               <Text style={styles.title}>SAGA</Text>
@@ -38,12 +41,12 @@ export default class HomeScreen extends Component {
               <Feather name='play-circle' size={130} color='#1A237E' />
             </TouchableOpacity>
             {/* <TouchableOpacity style={styles.buttonOutlined}>
-            <Text style={styles.buttonText}>CONTINUE GAME</Text>
-            <View style={{ display: 'flex', flexDirection: 'row' }}>
-              <Ionicons name='ios-timer' size={15} color='#90A4AE' />
-              <Text style={styles.subText}> 05:36 - Expert</Text>
-            </View>
-          </TouchableOpacity> */}
+              <Text style={styles.buttonText}>CONTINUE GAME</Text>
+              <View style={{ display: 'flex', flexDirection: 'row' }}>
+                <Ionicons name='ios-timer' size={15} color='#90A4AE' />
+                <Text style={styles.subText}> 05:36 - Expert</Text>
+              </View>
+            </TouchableOpacity> */}
             <TouchableOpacity style={styles.buttonFilled}>
               <View style={{ display: 'flex', flexDirection: 'row' }}>
                 <Ionicons name='md-calendar' size={30} color='white' />
@@ -57,17 +60,18 @@ export default class HomeScreen extends Component {
           </View>
         </>
       )
-    } else return null;
+    } else return null
   }
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 25,
+    justifyContent: 'center',
     alignContent: 'center'
   },
   header: {
+    marginTop: 25,
     padding: 25,
     paddingTop: 10,
     display: 'flex',
@@ -76,7 +80,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Cocogoose',
-    fontSize: 50,
+    fontSize: 55,
     color: '#1A237E'
   },
   play: {
@@ -88,7 +92,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#1A237E',
     borderRadius: 10,
-    width: 220,
+    width: 240,
     height: 57,
     alignSelf: 'center',
     alignItems: 'center'
@@ -96,7 +100,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 20,
     color: '#1A237E',
-    fontFamily: 'Roboto'
+    fontFamily: 'Quicksand-Medium'
   },
   subText: {
     color: '#90A4AE',
@@ -105,7 +109,7 @@ const styles = StyleSheet.create({
   buttonFilled: {
     margin: 15,
     padding: 5,
-    width: 220,
+    width: 240,
     height: 57,
     display: 'flex',
     flexDirection: 'row',
@@ -116,9 +120,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   buttonFilledText: {
-    fontFamily: 'Roboto',
+    fontFamily: 'Quicksand-Medium',
     fontSize: 20,
     color: 'white',
     alignSelf: 'center'
   }
-});
+})

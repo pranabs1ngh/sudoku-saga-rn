@@ -1,49 +1,39 @@
 import React from "react"
 import { Text } from "react-native"
 import { createAppContainer } from "react-navigation"
-import { createStackNavigator } from "react-navigation-stack"
+import { createStackNavigator } from 'react-navigation-stack'
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs"
-import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons'
 
 import HomeScreen from "./src/screens/HomeScreen"
 import GameScreen from "./src/screens/GameScreen"
+import ResultScreen from "./src/screens/ResultScreen"
 import StatisticsScreen from "./src/screens/StatisticsScreen"
 
 import { Provider as TimerProvider } from './src/context/TimerContext'
 
-const tabConfig = {
+const styles = {
   labelStyle: {
     fontFamily: 'Roboto',
     fontSize: 15,
     color: '#1A237E'
   }
-};
-
-const theme = {
-  ...DefaultTheme,
-  roundness: 2,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: '#212121',
-    accent: '#283593',
-  }
-};
+}
 
 const navigator = createStackNavigator(
   {
-    mainFlow: createMaterialBottomTabNavigator({
+    MainFlow: createMaterialBottomTabNavigator({
       Home: {
         screen: HomeScreen,
         navigationOptions: {
-          tabBarLabel: <Text style={tabConfig.labelStyle}>Home</Text>,
+          tabBarLabel: <Text style={styles.labelStyle}>Home</Text>,
           tabBarIcon: <Feather name="home" size={25} color='#1A237E' />
         }
       },
       Statistics: {
         screen: StatisticsScreen,
         navigationOptions: {
-          tabBarLabel: <Text style={tabConfig.labelStyle}>Statistics</Text>,
+          tabBarLabel: <Text style={styles.labelStyle}>Statistics</Text>,
           tabBarIcon: <Feather name="bar-chart-2" size={25} color='#1A237E' />
         }
       }
@@ -58,20 +48,19 @@ const navigator = createStackNavigator(
         },
         shifting: true
       }),
-    Game: GameScreen
+    Game: GameScreen,
+    Result: ResultScreen
   },
   {
-    initialRouteName: 'mainFlow',
+    initialRouteName: 'MainFlow',
     headerMode: 'none'
   }
-);
+)
 
-const App = createAppContainer(navigator);
+const App = createAppContainer(navigator)
 
 export default () => (
-  <PaperProvider theme={theme}>
-    <TimerProvider>
-      <App />
-    </TimerProvider>
-  </PaperProvider>
+  <TimerProvider>
+    <App />
+  </TimerProvider>
 )
