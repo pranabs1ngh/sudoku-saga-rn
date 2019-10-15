@@ -6,49 +6,51 @@ import { Context as TimerContext } from '../context/TimerContext'
 
 const padTime = num => num < 10 ? `0${num}` : num
 
-export default props => {
-  const { state, setTimer, updateTimer, pauseTimer } = useContext(TimerContext)
+export default ({ time, goBack, saveGame, gameplay, changeGameState, isGameOver, gameFinished, renderResult }) => {
+  const { state, setTimer, updateTimer, pauseTimer, stopTimer } = useContext(TimerContext)
 
   useEffect(() => {
-    if (props.gameFinished) {
+    setTimeout(() => {
       pauseTimer()
-      setTimeout(() => {
-        props.navigation.navigate('Result', { level: props.level })
-      }, 400)
-    }
-  }, [props.gameFinished])
+      renderResult(state)
+      stopTimer()
+    }, 400)
+  }, [gameFinished])
 
   useEffect(() => {
-    setTimer(0)
     pauseTimer()
-  }, [props.isGameOver])
+  }, [isGameOver])
 
   useEffect(() => {
-    setTimer(0)
+    saveGame(state)
+  }, [state])
+
+  useEffect(() => {
+    if (time) setTimer(time)
     updateTimer()
-    return pauseTimer
+    return () => stopTimer()
   }, [])
 
   return (
     <View style={styles.menuBar}>
-      <TouchableOpacity style={styles.back} onPress={() => props.navigation.goBack()}>
+      <TouchableOpacity style={styles.back} onPress={() => goBack()}>
         <Feather name="arrow-left" size={25} color='#1A237E' />
       </TouchableOpacity>
       <View style={styles.timer}>
-        <Ionicons name='ios-timer' size={25} color='#1A237E' />
+        <Ionicons name='ios-timer' size={25} color='#1A237E' style={{ textAlignVertical: 'center' }} />
         <Text style={styles.time}>
           {`${padTime(Math.floor(state / 60))}:${padTime(state % 60)}`}
         </Text>
       </View>
-      {props.gameplay ?
+      {gameplay ?
         <TouchableOpacity
-          onPress={() => { props.changeGameState(); pauseTimer() }}
+          onPress={() => { changeGameState(); pauseTimer() }}
           style={styles.pause}
         >
           <Ionicons name="ios-pause" size={25} color='#1A237E' />
         </TouchableOpacity> :
         <TouchableOpacity
-          onPress={() => { props.changeGameState(); updateTimer() }}
+          onPress={() => { changeGameState(); updateTimer() }}
           style={styles.pause}
         >
           <Ionicons name="ios-play" size={25} color='#1A237E' />
@@ -74,6 +76,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   time: {
+    width: 80,
     color: '#1A237E',
     fontSize: 20,
     fontFamily: 'Quicksand-Medium',

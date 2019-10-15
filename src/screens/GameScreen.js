@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { StyleSheet, StatusBar, Text, View, TouchableWithoutFeedback, Dimensions, BackHandler } from 'react-native'
+import { StyleSheet, StatusBar, Text, View, TouchableWithoutFeedback, Dimensions, AsyncStorage } from 'react-native'
 
-import { loadSudoku } from '../models/sudoku'
 import Header from '../components/Header'
 import Helpers from '../components/Helpers'
 import Numpad from '../components/Numpad'
@@ -11,8 +10,10 @@ import LevelsModal from '../components/LevelsModal'
 export default class GameScreen extends Component {
   constructor(props) {
     super(props)
+    this.time = props.navigation.state.params.time
     this.state = {
       gameplay: true,
+      board: props.navigation.state.params.board,
       gameFinished: false,
       isGameOver: false,
       newGame: false,
@@ -23,6 +24,11 @@ export default class GameScreen extends Component {
     this.init(this.props.navigation.state.params.level)
   }
 
+  newGame = (level, board) => {
+    this.init(level)
+    this.setState(({ key }) => ({ key: key + 1, board }))
+  }
+
   init = level => {
     this.selectedCell = null
     this.hidden = null
@@ -30,7 +36,6 @@ export default class GameScreen extends Component {
     this.btn = null
     this.ifPencil = false
     this.setState({
-      board: loadSudoku(level),
       srow: null,
       scol: null,
       snum: null,
@@ -40,12 +45,20 @@ export default class GameScreen extends Component {
     })
   }
 
-  componentDidMount = () => {
-    this.backHandler = BackHandler.addEventListener('hardwareBackPress',
-      () => this.props.navigation.navigate('MainFlow'))
+  goBack = () => this.props.navigation.goBack()
+
+  renderResult = time => {
+    this.removeGame()
+    this.props.navigation.navigate('Result', { level: this.level, time, newGame: this.newGame })
   }
 
-  componentWillUnmount = () => this.backHandler.remove()
+  saveGame = time => AsyncStorage.setItem('GAME', JSON.stringify({
+    level: this.level,
+    board: this.state.board,
+    time
+  }))
+
+  removeGame = () => AsyncStorage.removeItem('GAME')
 
   changeGameState = () => {
     this.state.gameplay ?
@@ -53,9 +66,9 @@ export default class GameScreen extends Component {
       this.setState({ gameplay: true })
   }
 
-  handleEntry = btn => {
-    let { board, error, taskStack, srow, scol, } = this.state
-    if (srow !== null && !this.ifPencil) {
+  handleEntry = async btn => {
+    let { gameplay, board, error, taskStack, srow, scol, } = this.state
+    if (gameplay && srow !== null && !this.ifPencil) {
       el = board[srow][scol]
       unum = el.unum
 
@@ -67,11 +80,13 @@ export default class GameScreen extends Component {
         else if (num && this.hidden === 40) this.setState({ gameFinished: true })
         taskStack.push({ row: srow, col: scol })
         this.setState({ board, snum: num, error, taskStack })
-
         if (error === 3)
-          setTimeout(() => { this.setState({ isGameOver: true }) }, 300)
+          setTimeout(() => {
+            this.removeGame()
+            this.setState({ isGameOver: true })
+          }, 300)
       }
-    } else if (srow != null && this.ifPencil) {
+    } else if (gameplay && srow != null && this.ifPencil) {
       el = board[srow][scol]
       unum = el.unum[el.unum.length - 1]
       if (!unum) {
@@ -89,10 +104,10 @@ export default class GameScreen extends Component {
   }
 
   undo = () => {
-    let { taskStack, board, srow, scol, snum } = this.state
+    let { gameplay, taskStack, board, srow, scol, snum } = this.state
     let task = taskStack[taskStack.length - 1]
 
-    if (task) {
+    if (gameplay && task) {
       srow = task.row
       scol = task.col
       unum = board[srow][scol].unum
@@ -110,8 +125,8 @@ export default class GameScreen extends Component {
   }
 
   eraseEntry = () => {
-    let { board, taskStack, srow, scol } = this.state
-    if (srow + 1) {
+    let { gameplay, board, taskStack, srow, scol } = this.state
+    if (gameplay && srow != null) {
       el = board[srow][scol]
       if (!el.visible) {
         taskStack.push({ row: srow, col: scol })
@@ -124,9 +139,9 @@ export default class GameScreen extends Component {
   }
 
   hint = () => {
-    let { board, hint, srow, scol } = this.state
+    let { gameplay, board, hint, srow, scol } = this.state
 
-    if (srow + 1 && hint < 3) {
+    if (gameplay && srow != null && hint < 3) {
       el = board[srow][scol]
       if (!el.visible) {
         el.pencil = []
@@ -206,15 +221,16 @@ export default class GameScreen extends Component {
   render = () => (
     <>
       <StatusBar barStyle='dark-content' hidden={false} />
-      <View style={styles.container}>
+      <View style={styles.container} key={this.state.key}>
         <Header
-          init={this.init}
-          level={this.level}
-          isGameOver={this.state.isGameOver}
+          goBack={this.goBack}
+          time={this.time}
+          saveGame={this.saveGame}
           gameplay={this.state.gameplay}
-          navigation={this.props.navigation}
-          gameFinished={this.state.gameFinished}
           changeGameState={this.changeGameState}
+          isGameOver={this.state.isGameOver}
+          gameFinished={this.state.gameFinished}
+          renderResult={this.renderResult}
         />
 
         <View style={styles.infoBar}>
@@ -223,10 +239,8 @@ export default class GameScreen extends Component {
           <Text style={styles.infoBarText}>Errors: {this.state.error}/3</Text>
         </View>
 
-        <View style={styles.sudoku}>
-          {this.renderSudoku()}
-        </View>
-        <Text style={{ alignSelf: 'center' }}>{this.hidden}</Text>
+        <View style={styles.sudoku}>{this.renderSudoku()}</View>
+
         <View style={styles.helpers}>
           <Helpers
             undo={this.undo}
@@ -244,7 +258,7 @@ export default class GameScreen extends Component {
         />
         <LevelsModal
           isVisible={this.state.newGame}
-          initGame={this.init}
+          newGame={this.newGame}
           setVisibility={() => this.setState({ newGame: false, isGameOver: false })}
           navigation={this.props.navigation}
         />
@@ -320,7 +334,7 @@ const styles = StyleSheet.create({
   },
   helpers: {
     flexGrow: 1,
-    marginBottom: 65,
+    marginBottom: 75,
     justifyContent: 'center'
   }
 })

@@ -1,6 +1,6 @@
 import React from "react"
 import { Text } from "react-native"
-import { createAppContainer } from "react-navigation"
+import { createAppContainer, createSwitchNavigator } from "react-navigation"
 import { createStackNavigator } from 'react-navigation-stack'
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs"
 import { Feather } from '@expo/vector-icons'
@@ -20,8 +20,8 @@ const styles = {
   }
 }
 
-const navigator = createStackNavigator(
-  {
+const navigator = createSwitchNavigator({
+  GameFlow: createStackNavigator({
     MainFlow: createMaterialBottomTabNavigator({
       Home: {
         screen: HomeScreen,
@@ -49,13 +49,13 @@ const navigator = createStackNavigator(
         shifting: true
       }),
     Game: GameScreen,
-    Result: ResultScreen
   },
-  {
-    initialRouteName: 'MainFlow',
-    headerMode: 'none'
-  }
-)
+    {
+      initialRouteName: 'MainFlow',
+      headerMode: 'none'
+    }),
+  Result: ResultScreen
+})
 
 const App = createAppContainer(navigator)
 

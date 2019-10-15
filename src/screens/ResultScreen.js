@@ -1,70 +1,80 @@
 import React, { Component } from 'react'
-import { StyleSheet, StatusBar, Text, View, Image, Animated, TouchableOpacity, BackHandler, AsyncStorage } from 'react-native'
+import { StyleSheet, StatusBar, Text, View, Animated, TouchableOpacity, BackHandler } from 'react-native'
 
 import LevelsModal from '../components/LevelsModal'
-import { Context as TimerContext } from '../context/TimerContext'
 
 export default class ResultScreen extends Component {
   constructor(props) {
     super(props)
+    this.opacity = new Animated.Value(0)
+    this.trophyScale = new Animated.Value(0.5)
 
-    this.bgScale = new Animated.Value(0.5)
-    this.state = {
-      level: props.navigation.state.params.level,
-      newGame: false
-    }
+    this.level = props.navigation.state.params.level
+    this.time = props.navigation.state.params.time
+    this.state = { newGame: false }
   }
 
-  componentDidMount = async () => {
-    this.backHandler = BackHandler.addEventListener('hardwareBackPress',
-      () => this.props.navigation.navigate('Home'))
-
-    Animated.spring(this.bgScale, {
+  componentDidMount = () => {
+    Animated.spring(this.trophyScale, {
       toValue: 1,
       friction: 1
     }).start()
+
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(this.opacity, {
+          toValue: 1,
+          duration: 500
+        }),
+        Animated.timing(this.opacity, {
+          toValue: 0,
+          duration: 500
+        })
+      ])
+    ).start()
+
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress',
+      () => this.props.navigation.navigate('Home'))
   }
 
   componentWillUnmount = () => this.backHandler.remove()
 
   padTime = num => num < 10 ? `0${num}` : num
 
-  render = () => (
-    <>
-      <StatusBar barStyle='dark-content' />
-      <Image source={require('../../assets/result-bg-2.png')} style={styles.bg} resizeMode='cover' />
-      <View style={styles.container}>
-        <View style={styles.messageContainer}>
-          <Text style={styles.message}>Hurray!!</Text>
-          <Text style={styles.message2}>YOU WIN</Text>
-        </View>
-        <Animated.Image
-          source={require('../../assets/trophy.png')}
-          style={{ ...styles.trophy, transform: [{ scale: this.bgScale }] }}
-          resizeMode='contain'
-        />
-        <View style={styles.footer}>
-          <Text style={styles.message}>{this.state.level}</Text>
-          <TimerContext.Consumer>
-            {({ state }) => <>
-              <Text style={styles.message2}>
-                {`${this.padTime(Math.floor(state / 60))}:${this.padTime(state % 60)}`}
-              </Text>
-              <TouchableOpacity style={styles.buttonFilled} onPress={() => this.setState({ newGame: true })}>
-                <Text style={styles.buttonFilledText}>New Game</Text>
-              </TouchableOpacity>
-            </>}
-          </TimerContext.Consumer>
-        </View>
-
-        <LevelsModal
-          isVisible={this.state.newGame}
-          setVisibility={() => this.setState({ newGame: false })}
-          navigation={this.props.navigation}
-        />
+  render = () => <>
+    <StatusBar barStyle='dark-content' />
+    <Animated.Image
+      source={require('../../assets/result-bg.png')}
+      style={{ ...styles.bg, opacity: this.opacity }}
+      resizeMode='cover'
+    />
+    <View style={styles.container}>
+      <View style={styles.messageContainer}>
+        <Text style={styles.message}>Hurray!!</Text>
+        <Text style={styles.message2}>YOU WIN</Text>
       </View>
-    </>
-  )
+      <Animated.Image
+        source={require('../../assets/trophy.png')}
+        style={{ ...styles.trophy, transform: [{ scale: this.trophyScale }] }}
+        resizeMode='contain'
+      />
+      <View style={styles.footer}>
+        <Text style={styles.message}>{this.level}</Text>
+        <Text style={styles.message2}>
+          {`${this.padTime(Math.floor(this.time / 60))}:${this.padTime(this.time % 60)}`}
+        </Text>
+        <TouchableOpacity style={styles.buttonFilled} onPress={() => this.setState({ newGame: true })}>
+          <Text style={styles.buttonFilledText}>New Game</Text>
+        </TouchableOpacity>
+      </View>
+
+      <LevelsModal
+        isVisible={this.state.newGame}
+        setVisibility={() => this.setState({ newGame: false })}
+        navigation={this.props.navigation}
+      />
+    </View>
+  </>
 }
 
 const styles = StyleSheet.create({

@@ -2,9 +2,9 @@ import React, { useEffect } from 'react'
 import { StyleSheet, View, Text, Modal, TouchableOpacity } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 
-import { init } from '../models/sudoku'
+import { init, loadSudoku } from '../models/sudoku'
 
-export default ({ isVisible, initGame, setVisibility, navigation }) => {
+export default ({ isVisible, newGame, setVisibility, navigation }) => {
   const levels = [
     { icon: '◻◻◻', level: 'Easy' },
     { icon: '◼◻◻', level: 'Medium' },
@@ -35,8 +35,9 @@ export default ({ isVisible, initGame, setVisibility, navigation }) => {
             <View style={{ backgroundColor: 'white' }}>
               <TouchableOpacity onPress={() => {
                 setVisibility()
-                navigation.navigate('Game', { level: item.level })
-                if (initGame) initGame(item.level)
+                const board = loadSudoku(item.level)
+                if (newGame) newGame(item.level, board)
+                else navigation.navigate('Game', { level: item.level, board })
               }}>
                 <View style={styles.item}>
                   <Text style={styles.icon}>{item.icon}</Text>

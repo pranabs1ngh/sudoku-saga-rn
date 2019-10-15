@@ -1,5 +1,9 @@
 import createDataContext from './createDataContext'
 
+const setTimer = dispatch => time => {
+  dispatch({ type: 'SET_TIMER', payload: time })
+}
+
 const updateTimer = dispatch => () => {
   setInterval(() => {
     dispatch({ type: 'UPDATE_TIMER' })
@@ -12,8 +16,10 @@ const pauseTimer = dispatch => () => {
   dispatch({ type: 'PAUSE_TIMER' })
 }
 
-const setTimer = dispatch => time => {
-  dispatch({ type: 'SET_TIMER', payload: time })
+const stopTimer = dispatch => () => {
+  for (let i = 1; i < 999; i++)
+    window.clearInterval(i)
+  dispatch({ type: 'STOP_TIMER' })
 }
 
 const timerReducer = (state, action) => {
@@ -24,6 +30,8 @@ const timerReducer = (state, action) => {
       return state + 1
     case 'PAUSE_TIMER':
       return state
+    case 'STOP_TIMER':
+      return 0
     default:
       return state
   }
@@ -31,6 +39,6 @@ const timerReducer = (state, action) => {
 
 export const { Context, Provider } = createDataContext(
   timerReducer,
-  { setTimer, updateTimer, pauseTimer },
+  { setTimer, updateTimer, pauseTimer, stopTimer },
   0
 )
