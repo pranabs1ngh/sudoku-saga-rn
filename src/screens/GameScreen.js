@@ -239,7 +239,13 @@ export default class GameScreen extends Component {
           <Text style={styles.infoBarText}>Errors: {this.state.error}/3</Text>
         </View>
 
-        <View style={styles.sudoku}>{this.renderSudoku()}</View>
+        <View style={styles.sudoku}>
+          {this.renderSudoku()}
+          {!this.state.gameplay && <View style={styles.paused}>
+            <Text style={styles.pausedText}>Game Paused !</Text>
+            <Text style={styles.pausedText}>Tap Play To Resume </Text>
+          </View>}
+        </View>
 
         <View style={styles.helpers}>
           <Helpers
@@ -336,5 +342,19 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     marginBottom: 75,
     justifyContent: 'center'
+  },
+  paused: {
+    height: width,
+    width: '99%',
+    position: 'absolute',
+    borderRadius: 10,
+    backgroundColor: '#ECEFF1',
+    justifyContent: 'center',
+    alignSelf: 'center'
+  },
+  pausedText: {
+    fontFamily: 'Quicksand-Medium',
+    fontSize: 22,
+    textAlign: 'center'
   }
 })
