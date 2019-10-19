@@ -37,7 +37,7 @@ export default ({ isVisible, newGame, setVisibility, navigation }) => {
                 setVisibility()
                 const board = loadSudoku(item.level)
                 if (newGame) newGame(item.level, board)
-                else navigation.navigate('Game', { level: item.level, board })
+                else navigation.navigate('Game', { level: item.level, board, hint: 0, error: 0 })
               }}>
                 <View style={styles.item}>
                   <Text style={styles.icon}>{item.icon}</Text>

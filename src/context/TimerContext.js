@@ -17,8 +17,6 @@ const pauseTimer = dispatch => () => {
 }
 
 const stopTimer = dispatch => () => {
-  for (let i = 1; i < 999; i++)
-    window.clearInterval(i)
   dispatch({ type: 'STOP_TIMER' })
 }
 

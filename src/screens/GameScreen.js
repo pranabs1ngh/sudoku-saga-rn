@@ -14,6 +14,8 @@ export default class GameScreen extends Component {
     this.state = {
       gameplay: true,
       board: props.navigation.state.params.board,
+      hint: props.navigation.state.params.hint,
+      error: props.navigation.state.params.error,
       gameFinished: false,
       isGameOver: false,
       newGame: false,
@@ -39,21 +41,18 @@ export default class GameScreen extends Component {
       srow: null,
       scol: null,
       snum: null,
-      hint: 0,
-      error: 0,
       taskStack: []
     })
   }
 
   goBack = () => this.props.navigation.goBack()
 
-  renderResult = time => {
-    this.removeGame()
-    this.props.navigation.navigate('Result', { level: this.level, time, newGame: this.newGame })
-  }
+  renderResult = time => this.props.navigation.navigate('Result', { level: this.level, time, newGame: this.newGame })
 
   saveGame = time => AsyncStorage.setItem('GAME', JSON.stringify({
     level: this.level,
+    hint: this.state.hint,
+    error: this.state.error,
     board: this.state.board,
     time
   }))
@@ -82,7 +81,7 @@ export default class GameScreen extends Component {
         this.setState({ board, snum: num, error, taskStack })
         if (error === 3)
           setTimeout(() => {
-            this.removeGame()
+            AsyncStorage.removeItem('GAME')
             this.setState({ isGameOver: true })
           }, 300)
       }
@@ -139,7 +138,7 @@ export default class GameScreen extends Component {
   }
 
   hint = () => {
-    let { gameplay, board, hint, srow, scol } = this.state
+    let { gameplay, board, hint, srow, scol, gameFinished } = this.state
 
     if (gameplay && srow != null && hint < 3) {
       el = board[srow][scol]
@@ -147,8 +146,8 @@ export default class GameScreen extends Component {
         el.pencil = []
         el.visible = !el.visible
         hint++
-        if (this.hidden === 1) this.setState({ gameFinished: true })
-        this.setState({ board, snum: el.num, hint })
+        if (this.hidden === 1) gameFinished = true
+        this.setState({ board, snum: el.num, hint, gameFinished })
       }
     }
   }

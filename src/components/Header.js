@@ -10,15 +10,17 @@ export default ({ time, goBack, saveGame, gameplay, changeGameState, isGameOver,
   const { state, setTimer, updateTimer, pauseTimer, stopTimer } = useContext(TimerContext)
 
   useEffect(() => {
-    setTimeout(() => {
+    if (gameFinished) {
       pauseTimer()
-      renderResult(state)
-      stopTimer()
-    }, 400)
+      setTimeout(() => {
+        renderResult(state)
+        stopTimer()
+      }, 400)
+    }
   }, [gameFinished])
 
   useEffect(() => {
-    pauseTimer()
+    if (isGameOver) pauseTimer()
   }, [isGameOver])
 
   useEffect(() => {
@@ -28,7 +30,7 @@ export default ({ time, goBack, saveGame, gameplay, changeGameState, isGameOver,
   useEffect(() => {
     if (time) setTimer(time)
     updateTimer()
-    return () => stopTimer()
+    return () => pauseTimer()
   }, [])
 
   return (

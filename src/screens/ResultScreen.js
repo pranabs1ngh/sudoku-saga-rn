@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
-import { StyleSheet, StatusBar, Text, View, Animated, TouchableOpacity, BackHandler } from 'react-native'
+import { StyleSheet, StatusBar, Text, View, Animated, TouchableOpacity, BackHandler, AsyncStorage } from 'react-native'
 
 import LevelsModal from '../components/LevelsModal'
 
 export default class ResultScreen extends Component {
   constructor(props) {
     super(props)
+
+    AsyncStorage.removeItem('GAME')
+
     this.opacity = new Animated.Value(0)
     this.trophyScale = new Animated.Value(0.5)
 
@@ -24,11 +27,11 @@ export default class ResultScreen extends Component {
       Animated.sequence([
         Animated.timing(this.opacity, {
           toValue: 1,
-          duration: 500
+          duration: 1000
         }),
         Animated.timing(this.opacity, {
           toValue: 0,
-          duration: 500
+          duration: 1000
         })
       ])
     ).start()
@@ -51,7 +54,7 @@ export default class ResultScreen extends Component {
     <View style={styles.container}>
       <View style={styles.messageContainer}>
         <Text style={styles.message}>Hurray!!</Text>
-        <Text style={styles.message2}>YOU WIN</Text>
+        <Text style={styles.message2}>GAME FINISHED</Text>
       </View>
       <Animated.Image
         source={require('../../assets/trophy.png')}
