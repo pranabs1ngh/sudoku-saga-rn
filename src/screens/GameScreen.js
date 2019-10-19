@@ -76,7 +76,7 @@ export default class GameScreen extends Component {
         unum.push(num)
 
         if (el && num && num != el.num) error++
-        else if (num && this.hidden === 40) this.setState({ gameFinished: true })
+        else if (num && this.hidden === 1) this.setState({ gameFinished: true })
         taskStack.push({ row: srow, col: scol })
         this.setState({ board, snum: num, error, taskStack })
         if (error === 3)
