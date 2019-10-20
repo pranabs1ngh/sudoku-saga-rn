@@ -96,7 +96,6 @@ export const loadSudoku = level => {
   if (level === 'Easy') hide = 40
   if (level === 'Medium') hide = 45
   if (level === 'Hard') hide = 50
-  if (level === 'Expert') hide = 55
 
   hideElements(hide)
 

@@ -76,7 +76,7 @@ export default class GameScreen extends Component {
         unum.push(num)
 
         if (el && num && num != el.num) error++
-        else if (num && this.hidden === 1) this.setState({ gameFinished: true })
+        else if (num && this.hidden <= 1) this.setState({ gameFinished: true })
         taskStack.push({ row: srow, col: scol })
         this.setState({ board, snum: num, error, taskStack })
         if (error === 3)
@@ -113,6 +113,7 @@ export default class GameScreen extends Component {
       pencil = board[srow][scol].pencil
 
       if (task.pencil) pencil.pop()
+      else if (task.pencilArr) board[srow][scol].pencil = task.pencilArr
       else {
         unum.pop()
         snum = unum[unum.length - 1]
@@ -128,11 +129,15 @@ export default class GameScreen extends Component {
     if (gameplay && srow != null) {
       el = board[srow][scol]
       if (!el.visible) {
-        taskStack.push({ row: srow, col: scol })
-
-        if (el.unum.length === 0) el.pencil = []
-        else el.unum.push(0)
-        this.setState({ board, snum: 0, taskStack })
+        if (el.unum[el.unum.length - 1]) {
+          taskStack.push({ row: srow, col: scol })
+          el.unum.push(0)
+          this.setState({ board, snum: 0, taskStack })
+        } else {
+          taskStack.push({ row: srow, col: scol, pencilArr: el.pencil })
+          el.pencil = []
+          this.setState({ board, snum: 0, taskStack })
+        }
       }
     }
   }
@@ -146,7 +151,7 @@ export default class GameScreen extends Component {
         el.pencil = []
         el.visible = !el.visible
         hint++
-        if (this.hidden === 1) gameFinished = true
+        if (this.hidden <= 1) gameFinished = true
         this.setState({ board, snum: el.num, hint, gameFinished })
       }
     }
@@ -333,8 +338,7 @@ const styles = StyleSheet.create({
   pencil: {
     fontFamily: 'Quicksand-Medium',
     fontSize: 10,
-    paddingHorizontal: 3,
-    paddingTop: 0.5,
+    paddingHorizontal: 4,
     color: '#546E7A'
   },
   helpers: {

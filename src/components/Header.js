@@ -30,7 +30,10 @@ export default ({ time, goBack, saveGame, gameplay, changeGameState, isGameOver,
   useEffect(() => {
     if (time) setTimer(time)
     updateTimer()
-    return () => pauseTimer()
+    return () => {
+      pauseTimer()
+      stopTimer()
+    }
   }, [])
 
   return (

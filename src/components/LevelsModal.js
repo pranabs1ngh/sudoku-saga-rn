@@ -6,10 +6,9 @@ import { init, loadSudoku } from '../models/sudoku'
 
 export default ({ isVisible, newGame, setVisibility, navigation }) => {
   const levels = [
-    { icon: '◻◻◻', level: 'Easy' },
-    { icon: '◼◻◻', level: 'Medium' },
-    { icon: '◼◼◻', level: 'Hard' },
-    { icon: '◼◼◼', level: 'Expert' },
+    { icon: '◼◻◻', level: 'Easy' },
+    { icon: '◼◼◻', level: 'Medium' },
+    { icon: '◼◼◼', level: 'Hard' },
   ]
 
   useEffect(() => {
