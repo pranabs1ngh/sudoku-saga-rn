@@ -14,16 +14,19 @@ export default class HomeScreen extends Component {
       modalVisibility: false,
       game: null
     }
+    this.loadFont()
+    this.loadGame()
   }
 
-  loadGame = async () => {
-    const game = await AsyncStorage.getItem('GAME')
-    this.setState({ game: JSON.parse(game) })
+  componentDidMount = () => {
+    init()
+    this.board = loadSudoku('Medium')
+    this.focusListener = this.props.navigation.addListener('didFocus', () => this.loadGame())
   }
 
-  padTime = num => num < 10 ? `0${num}` : num
+  componentWillUnmount = () => this.focusListener.remove()
 
-  componentWillMount = async () => {
+  loadFont = async () => {
     await Font.loadAsync({
       'Cocogoose': require('../../assets/fonts/Cocogoose.ttf'),
       'Quicksand': require('../../assets/fonts/Quicksand.ttf'),
@@ -32,16 +35,14 @@ export default class HomeScreen extends Component {
     })
 
     this.setState({ fontLoaded: true })
-    this.loadGame()
-    this.focusListener = this.props.navigation.addListener('didFocus', () => this.loadGame())
   }
 
-  componentDidMount = () => {
-    init()
-    this.board = loadSudoku('Medium')
+  loadGame = async () => {
+    const game = await AsyncStorage.getItem('GAME')
+    this.setState({ game: JSON.parse(game) })
   }
 
-  componentWillUnmount = () => this.focusListener.remove()
+  padTime = num => num < 10 ? `0${num}` : num
 
   render = () => {
     if (this.state.fontLoaded) {
