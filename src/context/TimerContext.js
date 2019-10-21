@@ -1,18 +1,19 @@
 import createDataContext from './createDataContext'
 
+let interval
+
 const setTimer = dispatch => time => {
   dispatch({ type: 'SET_TIMER', payload: time })
 }
 
 const updateTimer = dispatch => () => {
-  setInterval(() => {
+  interval = setInterval(() => {
     dispatch({ type: 'UPDATE_TIMER' })
   }, 1000)
 }
 
 const pauseTimer = dispatch => () => {
-  for (let i = 0; i < 9999; i++)
-    window.clearInterval(i)
+  clearInterval(interval)
   dispatch({ type: 'PAUSE_TIMER' })
 }
 

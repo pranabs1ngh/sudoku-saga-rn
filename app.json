@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "Sudoku Saga",
+    "description": "The classic sudoku game.",
     "slug": "sudoku-saga",
     "sdkVersion": "34.0.0",
     "version": "1.0.0",
